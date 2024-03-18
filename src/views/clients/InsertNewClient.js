@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import Papa from "papaparse"
-import { setGroupsOf5Values, setGroupsOf5Array } from "src/Validator"
+import { setGroupsOf5Values, setGroupsOf5Array } from "src/views/Validator"
 import {
   CCard,
   CCardBody,
@@ -20,17 +20,14 @@ import {
   CInputGroupText,
   CSpinner,
 } from "@coreui/react"
+import useVariables from "../variables"
 
 const InsertNewClient = () => {
   const navigate = useNavigate()
+  const { clientData, setClientData } = useVariables()
   const [showNewComponent, setShowNewComponent] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [formData, setFormData] = useState({})
-  const [clientData, setClientData] = useState({
-    all: [],
-    parents: [],
-    client: [],
-  })
 
   const handleFileInputChange = (event) => {
     setSelectedFile(event.target.files[0]) // Guarda el archivo seleccionado

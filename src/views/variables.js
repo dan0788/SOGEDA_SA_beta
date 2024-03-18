@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 const useVariables = () => {
   const range = [
@@ -73,6 +73,36 @@ const useVariables = () => {
     nameTableClients: "clientstest",
     nameTableManage: "portfolios",
   }
-  return { range, fieldsExoneratedSpecialChar, fieldsExoneratedUpper, webRoute, database }
+  const sections = [
+    { name: "Primera sección" },
+    { name: "Segunda sección" },
+    { name: "Tercera sección" },
+    { name: "Cuarta sección" },
+    { name: "Quinta sección" },
+    { name: "Sexta sección" },
+  ]
+  const [toast, setToast] = useState(false)
+  const toaster = useRef()
+  const [clientData, setClientData] = useState({
+    all: [],
+    parents: [],
+    client: [],
+  })
+  const [inputsValues, setInputsValues] = useState([])
+  return {
+    range,
+    fieldsExoneratedSpecialChar,
+    fieldsExoneratedUpper,
+    webRoute,
+    database,
+    sections,
+    toast,
+    setToast,
+    toaster,
+    clientData,
+    setClientData,
+    inputsValues,
+    setInputsValues,
+  }
 }
 export default useVariables

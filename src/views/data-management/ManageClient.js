@@ -9,8 +9,8 @@ import {
   getDateString,
   validDoubleIf,
   validateIfStringIsValid,
-} from "src/Validator"
-import useVariables from "../variables.mjs"
+} from "src/views/Validator"
+import useVariables from "../variables.js"
 import {
   CButton,
   CCard,
@@ -35,7 +35,17 @@ import {
 } from "@coreui/react"
 
 const ManageClient = () => {
-  const { range, fieldsExoneratedSpecialChar, fieldsExoneratedUpper, webRoute } = useVariables()
+  const { clientName, id } = useParams()
+  const {
+    range,
+    fieldsExoneratedSpecialChar,
+    fieldsExoneratedUpper,
+    webRoute,
+    clientData,
+    setClientData,
+    inputsValues,
+    setInputsValues,
+  } = useVariables()
   const [visible, setVisible] = useState(false)
   const [showComponents, setShowComponents] = useState({
     newComponent: true,
@@ -48,15 +58,8 @@ const ManageClient = () => {
     ruc1Button: false,
     ruc2Button: false,
   })
-  const { clientName, id } = useParams()
-  const [clientData, setClientData] = useState({
-    all: [],
-    parents: [],
-    client: [],
-  })
   var portfolioData = []
   const [comments, setComments] = useState("")
-  const [inputsValues, setInputsValues] = useState([])
   const [portfolioFields, setPortfolioFields] = useState([])
   const [portfolioFieldsAll, setPortfolioFieldsAll] = useState([])
   const [rangePortfolioFields, setRangePortfolioFields] = useState({

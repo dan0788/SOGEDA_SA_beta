@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
 import axios from "axios"
-import { setGroupsOf5Values } from "src/Validator"
-import useVariables from "../../variables.mjs"
+import { setGroupsOf5Values } from "src/views/Validator"
+import useVariables from "../../variables.js"
 import {
   CCard,
   CCardBody,
@@ -18,16 +18,14 @@ import {
   CInputGroup,
   CFormInput,
   CButton,
+  CToaster,
 } from "@coreui/react"
+import { saveToast } from "../../Components"
 
 const DetailsTable = () => {
   const { clientName } = useParams()
-  const [clientData, setClientData] = useState({
-    all: [],
-    parents: [],
-    client: [],
-  })
-  const [inputsValues, setInputsValues] = useState([])
+  const { toast, setToast, toaster, clientData, setClientData, inputsValues, setInputsValues } =
+    useVariables()
   const [fields, setFields] = useState([])
   const [grupos, setGrupos] = useState([])
   const [gruposClient, setGruposClient] = useState([])
@@ -79,10 +77,12 @@ const DetailsTable = () => {
         fields: fieldsArray,
       })
       if (response.data) {
-        alert("Datos recibidos correctamente front:\n" + response.data)
+        //alert("Datos recibidos correctamente front:\n" + response.data)
+        setToast(saveToast("Datos guardados con éxito", true))
       }
     } catch (error) {
-      alert("Error al enviar los datos:\n", +error)
+      //alert("Error al enviar los datos:\n", +error)
+      setToast(saveToast("Error al enviar los datos", false))
     }
   }
   const handleInputChange = (event, count, position) => {
@@ -92,6 +92,7 @@ const DetailsTable = () => {
       return newInputsValues
     })
   }
+
   return (
     <div>
       <div className="d-flex justify-content-center">
@@ -105,6 +106,7 @@ const DetailsTable = () => {
         >
           Save
         </CButton>
+        <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
       </div>
       <CRow>
         <CCol xs={12}>
