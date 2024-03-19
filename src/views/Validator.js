@@ -216,3 +216,11 @@ export function validateIfStringIsValid(stringData) {
     return true
   }
 }
+export function validateInputExist(inputSelector, valueToReturn) {
+  const selector = document.querySelector(inputSelector)
+  if (selector) {
+    return selector.value
+  } else {
+    return valueToReturn
+  }
+}

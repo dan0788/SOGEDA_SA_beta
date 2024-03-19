@@ -89,6 +89,10 @@ const DetailsTable = () => {
     setInputsValues((prevState) => {
       const newInputsValues = [...prevState]
       newInputsValues[position][count] = event.target.value
+      console.log(
+        "newInputsValues[" + position + "][" + count + "]",
+        newInputsValues[position][count],
+      )
       return newInputsValues
     })
   }

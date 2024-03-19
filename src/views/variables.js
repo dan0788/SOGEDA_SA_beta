@@ -89,6 +89,8 @@ const useVariables = () => {
     client: [],
   })
   const [inputsValues, setInputsValues] = useState([])
+  const [portfolioValues, setPortfolioValues] = useState([])
+  const [manageValues, setManageValues] = useState([])
   return {
     range,
     fieldsExoneratedSpecialChar,
@@ -103,6 +105,10 @@ const useVariables = () => {
     setClientData,
     inputsValues,
     setInputsValues,
+    portfolioValues,
+    setPortfolioValues,
+    manageValues,
+    setManageValues,
   }
 }
 export default useVariables
