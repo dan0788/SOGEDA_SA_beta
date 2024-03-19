@@ -3,7 +3,7 @@ import { CToast, CToastHeader, CToastBody } from "@coreui/react"
 import CIcon from "@coreui/icons-react"
 import { cilCheckAlt, cilX } from "@coreui/icons"
 
-export const saveToast = (value, iconCheck) => {
+const SaveToast = (value, iconCheck, time) => {
   const icon = iconCheck ? (
     <CIcon icon={cilCheckAlt} style={{ color: "green" }} />
   ) : (
@@ -24,9 +24,10 @@ export const saveToast = (value, iconCheck) => {
           {icon}
         </svg>
         <div className="fw-bold me-auto">Actualización de datos</div>
-        <small>7 min ago</small>
+        <small>{time}</small>
       </CToastHeader>
       <CToastBody>{value}</CToastBody>
     </CToast>
   )
 }
+export default SaveToast

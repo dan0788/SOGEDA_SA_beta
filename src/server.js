@@ -4,14 +4,14 @@ const mysql = require('mysql')
 const cors = require('cors') // Importa el middleware cors
 
 const app = express()
-const port = 3003
+const port = 3004
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const database = {
   nameDatabase: "excel",
-  nameTableClients: "clientstest",
+  nameTableClients: "clients",
   nameTableManage: "portfolios",
 }
 
@@ -50,7 +50,7 @@ app.get('/api/data/:clientName', (req, res) => {
 
 app.get('/api/data/clients/all', (req, res) => {
   const sql =
-    `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defunción FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" ORDER BY Nombre`
+    `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defuncion FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" ORDER BY Nombre`
   connection.query(sql, (err, result) => {
     if (err) {
       console.error('Error al insertar datos en MySQL:', err)
@@ -177,6 +177,7 @@ app.put('/api/data/portfolio/:NUT/:clientName/update', (req, res) => {
   /* console.log("portfolioFields", portfolioFields);
   console.log("inputsValues", inputsValues); */
   const sql = generateUpdatePortfolioSql(clientName, inputsValues, portfolioFieldsAll)
+  console.log(sql);
   //console.log(sql);
   Promise.all([executeQuery(sql, [])])
     .then((results) => {

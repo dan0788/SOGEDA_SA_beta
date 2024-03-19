@@ -15,16 +15,18 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CToaster,
   CInputGroup,
   CFormInput,
   CInputGroupText,
   CSpinner,
 } from "@coreui/react"
 import useVariables from "../variables"
+import SaveToast from "../components/SaveToast"
 
 const InsertNewClient = () => {
   const navigate = useNavigate()
-  const { clientData, setClientData } = useVariables()
+  const { toast, setToast, toaster, clientData, setClientData, webRoute } = useVariables()
   const [showNewComponent, setShowNewComponent] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [formData, setFormData] = useState({})
@@ -61,25 +63,24 @@ const InsertNewClient = () => {
   const handleUploadClick = async (event) => {
     event.preventDefault()
     try {
-      const response = await axios.post("http://localhost:3003/api/data/newclient", {
+      const response = await axios.post(`${webRoute}/api/data/newclient`, {
         formData: formData,
       })
       if (response.data) {
-        alert("Datos actualizados correctamente correctamente")
-        navigate("/clientstable")
+        setToast(SaveToast("Datos guardados con éxito", true, "Now"))
+        //navigate("/clientstable")
       }
     } catch (error) {
-      console.error("Error al enviar los datos:", error)
+      setToast(SaveToast("Error al enviar los datos", false, "Now"))
     }
   }
-
   const NewComponent = () => {
     if (!clientData.all || clientData.all.length === 0) {
       return <CSpinner color="danger"></CSpinner>
     }
-    console.log("clientData.all", clientData.all)
     return (
       <div>
+        <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
         <CRow>
           <CCol xs={12}>
             <CCard className="mb-2">

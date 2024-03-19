@@ -7,7 +7,6 @@ import {
   validateFixedNumbers,
   validateEmails,
   getDateString,
-  validDoubleIf,
   validateIfStringIsValid,
 } from "src/views/Validator"
 import useVariables from "../variables.js"
@@ -25,6 +24,7 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CToaster,
   CInputGroup,
   CFormInput,
   CModal,
@@ -33,6 +33,8 @@ import {
   CModalBody,
   CModalFooter,
 } from "@coreui/react"
+import NextPrevButton from "../components/NextPrevButton.js"
+import SaveToast from "../components/SaveToast.js"
 
 const ManageClient = () => {
   const { clientName, id } = useParams()
@@ -42,9 +44,16 @@ const ManageClient = () => {
     fieldsExoneratedUpper,
     webRoute,
     clientData,
+    toast,
+    setToast,
+    toaster,
     setClientData,
     inputsValues,
     setInputsValues,
+    portfolioValues,
+    setPortfolioValues,
+    manageValues,
+    setManageValues,
   } = useVariables()
   const [visible, setVisible] = useState(false)
   const [showComponents, setShowComponents] = useState({
@@ -59,6 +68,7 @@ const ManageClient = () => {
     ruc2Button: false,
   })
   var portfolioData = []
+  var inputData = manageValues
   const [comments, setComments] = useState("")
   const [portfolioFields, setPortfolioFields] = useState([])
   const [portfolioFieldsAll, setPortfolioFieldsAll] = useState([])
@@ -84,6 +94,12 @@ const ManageClient = () => {
           parents: parents,
         }))
         handleButtonClick(id)
+        if (id == "6") {
+          setShowComponents((prevState) => ({
+            ...prevState,
+            saveButton: true,
+          }))
+        }
         let min = 0
         let max = 0
         range.map((element) => {
@@ -142,7 +158,7 @@ const ManageClient = () => {
           `${webRoute}/api/data/portfolio/${response.data.result1[0].NUT}`,
         )
         portfolioData = Object.values(response3.data[0][0])
-        setInputsValues(portfolioData)
+        setPortfolioValues(portfolioData)
         //console.log("portfolioData", portfolioData)
         //console.log("parents", parents)
         if (all && all.length > 0) {
@@ -164,33 +180,62 @@ const ManageClient = () => {
           if (parents && parents.length > 0) {
             conyugeRUC = parents[0].Tipo == "CONYUGE" ? true : false
           }
-          let addressT = client.Parroquia + " " + client.Dirección
-          setInputsValues((prevState) => {
-            const newInputsValues = [...prevState]
-            newInputsValues[0] = !client.Fecha_Defunción ? "VIVO" : "FALLECIDO"
-            newInputsValues[1] = client.Estado_Civil
-            newInputsValues[2] = client.NUT
-            newInputsValues[3] = validatedFixedNumbersT ? validatedFixedNumbersT[0] : ""
-            newInputsValues[4] = validatedMobileNumbersT ? validatedMobileNumbersT[0] : ""
-            newInputsValues[5] = validatedEmailsT ? validatedEmailsT[0] : ""
-            newInputsValues[6] = ""
-            newInputsValues[7] = ""
-            newInputsValues[8] = addressT.trim() !== "" ? addressT : ""
-            newInputsValues[9] = ""
-            newInputsValues[10] = ""
-            newInputsValues[11] = client.Provincia
-            newInputsValues[12] = client.Cantón
-            newInputsValues[13] = client.Parroquia
-            newInputsValues[14] = client.Cantón
-            newInputsValues[15] = ""
-            newInputsValues[16] = conyugeType
-            newInputsValues[17] = conyugeNUT
-            newInputsValues[18] = validatedFixedNumbersC ? validatedFixedNumbersC[0] : ""
-            newInputsValues[19] = validatedFixedNumbersC ? validatedFixedNumbersC[1] : ""
-            newInputsValues[20] = validatedMobileNumbersC ? validatedMobileNumbersC[0] : ""
-            newInputsValues[21] = validatedMobileNumbersC ? validatedMobileNumbersC[1] : ""
-            newInputsValues[22] = validatedEmailsC ? validatedEmailsC[0] : ""
-            newInputsValues[49] = fillComments(
+          let addressT = client.Parroquia + " " + client.Direccion
+          setManageValues((prevState) => {
+            const newManageValues = [...prevState]
+            newManageValues[0] = !client.Fecha_Defuncion ? "VIVO" : "FALLECIDO"
+            newManageValues[1] = client.Estado_Civil
+            newManageValues[2] = client.NUT
+            newManageValues[3] = validatedFixedNumbersT.length > 0 ? validatedFixedNumbersT[0] : ""
+            newManageValues[4] =
+              validatedMobileNumbersT.length > 0 ? validatedMobileNumbersT[0] : ""
+            newManageValues[5] = validatedEmailsT.length > 0 ? validatedEmailsT[0] : ""
+            newManageValues[6] = ""
+            newManageValues[7] = ""
+            newManageValues[8] = addressT.trim() !== "" ? addressT : ""
+            newManageValues[9] = ""
+            newManageValues[10] = ""
+            newManageValues[11] = client.Provincia ? client.Provincia : ""
+            newManageValues[12] = client.Canton ? client.Canton : ""
+            newManageValues[13] = client.Parroquia ? client.Parroquia : ""
+            newManageValues[14] = client.Canton ? client.Canton : ""
+            newManageValues[15] = ""
+            newManageValues[16] = conyugeType
+            newManageValues[17] = conyugeNUT
+            newManageValues[18] = validatedFixedNumbersC.length > 0 ? validatedFixedNumbersC[0] : ""
+            newManageValues[19] = validatedFixedNumbersC.length > 0 ? validatedFixedNumbersC[1] : ""
+            newManageValues[20] =
+              validatedMobileNumbersC.length > 0 ? validatedMobileNumbersC[0] : ""
+            newManageValues[21] =
+              validatedMobileNumbersC.length > 0 ? validatedMobileNumbersC[1] : ""
+            newManageValues[22] = validatedEmailsC.length > 0 ? validatedEmailsC[0] : ""
+            newManageValues[23] = ""
+            newManageValues[24] = ""
+            newManageValues[25] = ""
+            newManageValues[26] = ""
+            newManageValues[27] = ""
+            newManageValues[28] = ""
+            newManageValues[29] = ""
+            newManageValues[30] = ""
+            newManageValues[31] = ""
+            newManageValues[32] = ""
+            newManageValues[33] = ""
+            newManageValues[34] = ""
+            newManageValues[35] = ""
+            newManageValues[36] = ""
+            newManageValues[37] = ""
+            newManageValues[38] = ""
+            newManageValues[39] = ""
+            newManageValues[40] = ""
+            newManageValues[41] = ""
+            newManageValues[42] = ""
+            newManageValues[43] = ""
+            newManageValues[44] = ""
+            newManageValues[45] = ""
+            newManageValues[46] = ""
+            newManageValues[47] = ""
+            newManageValues[48] = ""
+            newManageValues[49] = fillComments(
               validatedFixedNumbersT,
               validatedEmailsT,
               validatedFixedNumbersC,
@@ -199,57 +244,58 @@ const ManageClient = () => {
               all,
             )
             //RUC
-            newInputsValues[50] = ""
-            newInputsValues[51] = ""
-            newInputsValues[52] = ""
-            newInputsValues[53] = ""
-            newInputsValues[54] = ""
-            newInputsValues[55] = ""
-            newInputsValues[56] = ""
-            newInputsValues[57] = ""
-            newInputsValues[58] = !conyugeRUC ? "NO HAY DATOS" : newInputsValues[58] //revisar
-            newInputsValues[59] = !conyugeRUC ? "NO HAY DATOS" : newInputsValues[59]
-            newInputsValues[60] = !conyugeRUC ? "NO HAY DATOS" : newInputsValues[60]
-            newInputsValues[61] = ""
+            newManageValues[50] = ""
+            newManageValues[51] = ""
+            newManageValues[52] = ""
+            newManageValues[53] = ""
+            newManageValues[54] = ""
+            newManageValues[55] = ""
+            newManageValues[56] = ""
+            newManageValues[57] = ""
+            newManageValues[58] = !conyugeRUC ? "NO HAY DATOS" : newManageValues[58] //revisar
+            newManageValues[59] = !conyugeRUC ? "NO HAY DATOS" : newManageValues[59]
+            newManageValues[60] = !conyugeRUC ? "NO HAY DATOS" : newManageValues[60]
+            newManageValues[61] = ""
             //SRI
-            newInputsValues[62] = ""
-            newInputsValues[63] = ""
-            newInputsValues[64] = ""
-            newInputsValues[65] = ""
-            newInputsValues[66] = ""
-            newInputsValues[67] = ""
-            newInputsValues[68] = ""
-            newInputsValues[69] = ""
-            newInputsValues[70] = ""
-            newInputsValues[71] = "NO HAY DATOS"
-            newInputsValues[72] = "NO HAY DATOS"
-            newInputsValues[73] = "NO HAY DATOS"
-            newInputsValues[74] = "NO HAY DATOS"
-            newInputsValues[75] = "NO HAY DATOS"
-            newInputsValues[76] = ""
-            newInputsValues[77] = ""
-            newInputsValues[78] = ""
-            newInputsValues[79] = ""
-            newInputsValues[80] = ""
-            newInputsValues[81] = ""
-            newInputsValues[82] = ""
-            newInputsValues[83] = ""
-            newInputsValues[84] = ""
-            newInputsValues[85] = ""
-            newInputsValues[86] = ""
-            newInputsValues[87] = ""
-            newInputsValues[88] = ""
-            newInputsValues[89] = ""
-            newInputsValues[90] = ""
-            newInputsValues[91] = ""
-            newInputsValues[92] = ""
-            newInputsValues[93] = ""
-            newInputsValues[94] = ""
-            newInputsValues[95] = ""
-            newInputsValues[96] = ""
-            newInputsValues[97] = ""
-            newInputsValues[98] = ""
-            return newInputsValues
+            newManageValues[62] = ""
+            newManageValues[63] = ""
+            newManageValues[64] = ""
+            newManageValues[65] = ""
+            newManageValues[66] = ""
+            newManageValues[67] = ""
+            newManageValues[68] = ""
+            newManageValues[69] = ""
+            newManageValues[70] = ""
+            newManageValues[71] = "NO HAY DATOS"
+            newManageValues[72] = "NO HAY DATOS"
+            newManageValues[73] = "NO HAY DATOS"
+            newManageValues[74] = "NO HAY DATOS"
+            newManageValues[75] = "NO HAY DATOS"
+            newManageValues[76] = ""
+            newManageValues[77] = ""
+            newManageValues[78] = ""
+            newManageValues[79] = ""
+            newManageValues[80] = ""
+            newManageValues[81] = ""
+            newManageValues[82] = ""
+            newManageValues[83] = ""
+            newManageValues[84] = ""
+            newManageValues[85] = ""
+            newManageValues[86] = ""
+            newManageValues[87] = ""
+            newManageValues[88] = ""
+            newManageValues[89] = ""
+            newManageValues[90] = ""
+            newManageValues[91] = ""
+            newManageValues[92] = ""
+            newManageValues[93] = ""
+            newManageValues[94] = ""
+            newManageValues[95] = ""
+            newManageValues[96] = ""
+            newManageValues[97] = ""
+            newManageValues[98] = ""
+            setInputsValues(newManageValues)
+            return newManageValues
           })
         }
       } catch (error) {
@@ -323,20 +369,17 @@ const ManageClient = () => {
         newComment = newComment + "REGISTRA 2 DEMANDAS"
       } else if (!demand1 && !demand2) {
         newComment =
-          newComment +
-          "NO REGISTRA NINGUNA DEMANDA Y SALE COMO 'LA CONSULTA NO DEVOLVIO RESULTADOS'"
+          newComment + "NO REGISTRA NINGUNA DEMANDA Y SALE COMO LA CONSULTA NO DEVOLVIO RESULTADOS"
       }
-      setInputsValues((prevState) => {
-        const newInputsValues = [...prevState]
-        newInputsValues[99] = newComment
-        return newInputsValues
+      setManageValues((prevState) => {
+        const newManageValues = [...prevState]
+        newManageValues[99] = newComment
+        return newManageValues
       })
       return newComment
     }
   }
   const handleButtonClick = (handleId) => {
-    //actualizar datos
-    updatePortfolio()
     const next = handleId > 0 && handleId < range.length ? true : false
     const prev = handleId > 1 && handleId <= range.length ? true : false
     const save = handleId === range.length ? true : false
@@ -365,19 +408,21 @@ const ManageClient = () => {
       ? value.replace(/[úÚ]/g, "U")
       : value
     value = !fieldsExoneratedSpecialChar.includes(selectedField)
-      ? value.replace(/[^\w\sñÑ]/g, "Ñ")
+      ? value.replace(/[ñÑ]/g, "N")
       : value
     value = !fieldsExoneratedSpecialChar.includes(selectedField)
-      ? value.replace(/[^\w\s]/g, "")
+      ? value.replace(/[^\w\sñÑ]/g, "")
       : value
     value = !fieldsExoneratedUpper.includes(selectedField) ? value.toUpperCase() : value
-    setInputsValues((prevState) => {
-      const newInputsValues = [...prevState]
-      newInputsValues[count] = value
-      return newInputsValues
+    setManageValues((prevState) => {
+      const newManageValues = [...prevState]
+      newManageValues[count] = value
+      return newManageValues
     })
   }
   const updatePortfolio = async () => {
+    console.log("portfolioFieldsAll", portfolioFieldsAll)
+    console.log("inputsValues", inputsValues)
     try {
       const response = await axios.put(
         `${webRoute}/api/data/portfolio/${clientData.client.NUT}/${clientName}/update`,
@@ -386,17 +431,40 @@ const ManageClient = () => {
           inputsValues: inputsValues,
         },
       )
+      if (response.data) {
+        setToast(SaveToast("Datos guardados con éxito", true, "Now"))
+      }
     } catch (error) {
       console.log(error)
+      setToast(SaveToast("Error al enviar los datos", false, "Now"))
     }
   }
   const FillEmptysButton = () => {
-    const array = inputsValues.map((element) =>
-      !element || element == "" || element == "undefined" || element == "null"
-        ? "NO HAY DATOS"
-        : element,
-    )
-    setInputsValues(array)
+    setManageValues((prevState) => {
+      const newManageValues = [...prevState]
+      for (let i = 0; i < 100; i++) {
+        if (i >= 0 && i <= 15) {
+          newManageValues[i] = id != "1" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+        if (i >= 16 && i <= 22) {
+          newManageValues[i] = id != "2" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+        if (i >= 23 && i <= 35) {
+          newManageValues[i] = id != "3" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+        if (i >= 36 && i <= 49) {
+          newManageValues[i] = id != "4" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+        if (i >= 50 && i <= 61) {
+          newManageValues[i] = id != "5" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+        if (i >= 62) {
+          newManageValues[i] = id != "6" ? portfolioValues[i] : prevState[i] || "NO HAY DATOS"
+        }
+      }
+      setInputsValues(newManageValues)
+      return newManageValues
+    })
   }
   const ruc1Click = () => {
     const validRuc = validateIfStringIsValid(clientData.client.Fecha_Salida)
@@ -408,46 +476,46 @@ const ManageClient = () => {
     const addressRuc =
       clientData.client.Provincia_1 +
       " " +
-      clientData.client.Cantón_1 +
+      clientData.client.Canton_1 +
       " " +
       clientData.client.Parroquia_1 +
       " " +
-      clientData.client.Dirección_1
-    setInputsValues((prevState) => {
-      const newInputsValues = [...prevState]
+      clientData.client.Direccion_1
+    setManageValues((prevState) => {
+      const newManageValues = [...prevState]
       //SRI
-      newInputsValues[62] = !validRuc ? clientData.client.Empresa : "" //nombre empresa
-      newInputsValues[63] = !validRuc ? clientData.client.Actividad_1 : "" //actividad
-      newInputsValues[64] = !validRuc ? clientData.client.Descripción : "" //descripcion
-      newInputsValues[65] = !validRuc ? clientData.client.Cargo : "" //cargo
-      newInputsValues[66] = jobTime + " AÑOS" //tiempo
-      newInputsValues[67] = !validRuc ? addressRuc : addressRuc.trim() //direccion
-      newInputsValues[68] = ""
-      newInputsValues[69] = ""
-      newInputsValues[70] = "" //telefono
-      return newInputsValues
+      newManageValues[62] = !validRuc ? clientData.client.Empresa : "" //nombre empresa
+      newManageValues[63] = !validRuc ? clientData.client.Actividad_1 : "" //actividad
+      newManageValues[64] = !validRuc ? clientData.client.Descripcion : "" //descripcion
+      newManageValues[65] = !validRuc ? clientData.client.Cargo : "" //cargo
+      newManageValues[66] = jobTime + " AÑOS" //tiempo
+      newManageValues[67] = !validRuc ? addressRuc : addressRuc.trim() //direccion
+      newManageValues[68] = ""
+      newManageValues[69] = ""
+      newManageValues[70] = "" //telefono
+      return newManageValues
     })
   }
   const ruc2Click = () => {
-    const validRucCancellled = validateIfStringIsValid(clientData.client.Fecha_Cancelación)
-    const validRucSuspended = validateIfStringIsValid(clientData.client.Fecha_Suspensión)
+    const validRucCancellled = validateIfStringIsValid(clientData.client.Fecha_Cancelacion)
+    const validRucSuspended = validateIfStringIsValid(clientData.client.Fecha_Suspension)
     if (validRucSuspended == true && validRucCancellled == false) {
       setVisible(true)
     }
-    if (validRucCancellled == true) {
-      setInputsValues((prevState) => {
-        const newInputsValues = [...prevState]
+    if (validRucCancellled == false) {
+      setManageValues((prevState) => {
+        const newManageValues = [...prevState]
         //SRI
-        newInputsValues[62] = "" //nombre empresa
-        newInputsValues[63] = "" //actividad
-        newInputsValues[64] = "" //descripcion
-        newInputsValues[65] = "" //cargo
-        newInputsValues[66] = "" //tiempo
-        newInputsValues[67] = "" //direccion
-        newInputsValues[68] = ""
-        newInputsValues[69] = ""
-        newInputsValues[70] = "" //telefono
-        return newInputsValues
+        newManageValues[62] = "" //nombre empresa
+        newManageValues[63] = "" //actividad
+        newManageValues[64] = "" //descripcion
+        newManageValues[65] = "" //cargo
+        newManageValues[66] = "" //tiempo
+        newManageValues[67] = "" //direccion
+        newManageValues[68] = ""
+        newManageValues[69] = ""
+        newManageValues[70] = "" //telefono
+        return newManageValues
       })
     }
   }
@@ -478,20 +546,20 @@ const ManageClient = () => {
     const addressRuc =
       clientData.client.Provincia_2 +
       " " +
-      clientData.client.Cantón_2 +
+      clientData.client.Canton_2 +
       " " +
       clientData.client.Parroquia_2 +
       " " +
-      clientData.client.Dirección_2 +
+      clientData.client.Direccion_2 +
       " " +
       clientData.client.Referencia
     if (value == "SI") {
       setInputsValues((prevState) => {
         const newInputsValues = [...prevState]
         //SRI
-        newInputsValues[62] = clientData.client.Razón_Social //nombre empresa
+        newInputsValues[62] = clientData.client.Razon_Social //nombre empresa
         newInputsValues[63] = clientData.client.Actividad_2 //actividad
-        newInputsValues[64] = clientData.client.Nombre_Fantasía //descripcion
+        newInputsValues[64] = clientData.client.Nombre_Fantasia //descripcion
         newInputsValues[65] = "" //cargo
         newInputsValues[66] = jobTime != "" ? jobTime + " AÑOS" : "" //tiempo
         newInputsValues[67] = validateIfStringIsValid(addressRuc) ? addressRuc : addressRuc.trim() //direccion
@@ -521,39 +589,6 @@ const ManageClient = () => {
       })
     }
   }
-  const NextButton = () => {
-    return (
-      <CButton
-        color="info"
-        size="sm"
-        className="mb-2 mx-2 col-md-2"
-        onClick={() => handleButtonClick(parseInt(id) + 1)}
-        href={`/manage/client/${clientName}/${parseInt(id) + 1}`}
-      >
-        Next &raquo;
-      </CButton>
-    )
-  }
-  const PrevButton = () => {
-    return (
-      <CButton
-        color="info"
-        size="sm"
-        className="mb-2 mx-2 col-md-2"
-        onClick={() => handleButtonClick(parseInt(id) - 1)}
-        href={`/manage/client/${clientName}/${parseInt(id) - 1}`}
-      >
-        &laquo; Prev
-      </CButton>
-    )
-  }
-  const SaveButton = () => {
-    return (
-      <CButton color="info" size="sm" className="mb-2 mx-2 col-md-2">
-        Save
-      </CButton>
-    )
-  }
   const CisText = () => {
     const textC = clientData.parents.some((obj) => obj.Tipo === "CONYUGE")
       ? "CI_CONYUGE:" + clientData.parents[0].NUT
@@ -582,71 +617,71 @@ const ManageClient = () => {
     const validatedMobileNumbersR = validateMobileNumbers(clientData.all, selectedParent.Tipo)
     const validatedFixedNumbersR = validateFixedNumbers(clientData.all, selectedParent.Tipo)
     const validatedEmailsR = validateEmails(clientData.all, selectedParent.Tipo)
-    const jobNumber = selectedParent.Teléfono_1
+    const jobNumber = selectedParent.Telefono_1
     const addressR =
       selectedParent.Provincia +
       " " +
-      selectedParent.Cantón +
+      selectedParent.Canton +
       " " +
       selectedParent.Parroquia +
       " " +
-      selectedParent.Dirección
+      selectedParent.Direccion
     const relationship = selectedParent.Tipo.includes("HIJO") ? "HIJO" : selectedParent.Tipo
     const addressRuc1 =
       selectedParent.Provincia_1 +
       " " +
-      selectedParent.Cantón_1 +
+      selectedParent.Canton_1 +
       " " +
       selectedParent.Parroquia_1 +
       " " +
-      selectedParent.Dirección_1
+      selectedParent.Direccion_1
     const addressRuc2 =
       selectedParent.Provincia_2 +
       " " +
-      selectedParent.Cantón_2 +
+      selectedParent.Canton_2 +
       " " +
       selectedParent.Parroquia_2 +
       " " +
-      selectedParent.Dirección_2 +
+      selectedParent.Direccion_2 +
       " " +
       selectedParent.Referencia
     const addressJobR =
       selectedParent.RUC_1 != "" ? addressRuc1 : selectedParent.RUC_2 != "" ? addressRuc2 : ""
     if (referenceType == "RF1") {
-      setInputsValues((prevState) => {
-        const newInputsValues = [...prevState]
-        newInputsValues[23] = selectedParent.NUT
-        newInputsValues[24] = selectedParent.Nombre
-        newInputsValues[25] = relationship
-        newInputsValues[26] = validatedMobileNumbersR ? validatedMobileNumbersR[0] : ""
-        newInputsValues[27] = validatedMobileNumbersR ? validatedMobileNumbersR[1] : ""
-        newInputsValues[28] = addressR.trim() !== "" ? addressR : "" //trim elimina espacios en blanco
-        newInputsValues[29] = selectedParent.Cargo
-        newInputsValues[30] = addressJobR.trim() !== "" ? addressJobR : ""
-        newInputsValues[31] = getDateString(selectedParent.Fecha_Nacimiento)
-        newInputsValues[32] = validatedFixedNumbersR ? validatedFixedNumbersR[0] : ""
-        newInputsValues[33] = jobNumber.length == 9 ? jobNumber : ""
-        newInputsValues[34] = jobNumber.length == 10 ? jobNumber : ""
-        newInputsValues[35] = validatedEmailsR.length > 0 ? validatedEmailsR[0] : ""
-        return newInputsValues
+      setManageValues((prevState) => {
+        const newManageValues = [...prevState]
+        newManageValues[23] = selectedParent.NUT
+        newManageValues[24] = selectedParent.Nombre
+        newManageValues[25] = relationship
+        newManageValues[26] = validatedMobileNumbersR ? validatedMobileNumbersR[0] : ""
+        newManageValues[27] = validatedMobileNumbersR ? validatedMobileNumbersR[1] : ""
+        newManageValues[28] = addressR.trim() !== "" ? addressR : "" //trim elimina espacios en blanco
+        newManageValues[29] = selectedParent.Cargo
+        newManageValues[30] = addressJobR.trim() !== "" ? addressJobR : ""
+        newManageValues[31] = getDateString(selectedParent.Fecha_Nacimiento)
+        newManageValues[32] = validatedFixedNumbersR ? validatedFixedNumbersR[0] : ""
+        newManageValues[33] = jobNumber.length == 9 ? jobNumber : ""
+        newManageValues[34] = jobNumber.length == 10 ? jobNumber : ""
+        newManageValues[35] = validatedEmailsR.length > 0 ? validatedEmailsR[0] : ""
+        return newManageValues
       })
     } else if (referenceType == "RF2") {
-      setInputsValues((prevState) => {
-        const newInputsValues = [...prevState]
-        newInputsValues[36] = selectedParent.NUT
-        newInputsValues[37] = selectedParent.Nombre
-        newInputsValues[38] = relationship
-        newInputsValues[39] = validatedMobileNumbersR ? validatedMobileNumbersR[0] : ""
-        newInputsValues[40] = validatedMobileNumbersR ? validatedMobileNumbersR[1] : ""
-        newInputsValues[41] = addressR.trim() !== "" ? addressR : ""
-        newInputsValues[42] = selectedParent.Cargo
-        newInputsValues[43] = addressJobR.trim() !== "" ? addressJobR : ""
-        newInputsValues[44] = getDateString(selectedParent.Fecha_Nacimiento)
-        newInputsValues[45] = validatedFixedNumbersR ? validatedFixedNumbersR[0] : ""
-        newInputsValues[46] = jobNumber.length == 9 ? jobNumber : ""
-        newInputsValues[47] = jobNumber.length == 10 ? jobNumber : ""
-        newInputsValues[48] = validatedEmailsR ? validatedEmailsR[0] : ""
-        return newInputsValues
+      setManageValues((prevState) => {
+        const newManageValues = [...prevState]
+        newManageValues[36] = selectedParent.NUT
+        newManageValues[37] = selectedParent.Nombre
+        newManageValues[38] = relationship
+        newManageValues[39] = validatedMobileNumbersR ? validatedMobileNumbersR[0] : ""
+        newManageValues[40] = validatedMobileNumbersR ? validatedMobileNumbersR[1] : ""
+        newManageValues[41] = addressR.trim() !== "" ? addressR : ""
+        newManageValues[42] = selectedParent.Cargo
+        newManageValues[43] = addressJobR.trim() !== "" ? addressJobR : ""
+        newManageValues[44] = getDateString(selectedParent.Fecha_Nacimiento)
+        newManageValues[45] = validatedFixedNumbersR ? validatedFixedNumbersR[0] : ""
+        newManageValues[46] = jobNumber.length == 9 ? jobNumber : ""
+        newManageValues[47] = jobNumber.length == 10 ? jobNumber : ""
+        newManageValues[48] = validatedEmailsR ? validatedEmailsR[0] : ""
+        return newManageValues
       })
     }
   }
@@ -676,14 +711,33 @@ const ManageClient = () => {
       </div>
     )
   }
+  const NextButton = () => {
+    const handleClick = () => {
+      handleButtonClick(parseInt(id) + 1)
+    }
+    return NextPrevButton(handleClick, `/manage/client/${clientName}/${parseInt(id) + 1}`, "Next »")
+  }
+  const PrevButton = () => {
+    const handleClick = () => {
+      handleButtonClick(parseInt(id) - 1)
+    }
+    return NextPrevButton(handleClick, `/manage/client/${clientName}/${parseInt(id) - 1}`, `« Prev`)
+  }
+  const SaveButton = () => {
+    const handleClick = () => {
+      //actualizar datos
+      updatePortfolio()
+    }
+    return NextPrevButton(handleClick, "", "Save")
+  }
   return (
     <div>
+      <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
       <div className="d-flex justify-content-center">
         {id > 1 && id <= range.length && showComponents.prevButton && <PrevButton />}
-        {/* {id > 0 && id < range.length && showComponents.nextButton && <NextButton />} */}
-        {<NextButton />}
-        {id == range.length && showComponents.saveButton && <SaveButton />}
+        {id > 0 && id < range.length && showComponents.nextButton && <NextButton />}
       </div>
+      <div>{<SaveButton />}</div>
       <CModal
         backdrop="static"
         visible={visible}
@@ -757,7 +811,7 @@ const ManageClient = () => {
                                   <CFormInput
                                     aria-label="Username"
                                     aria-describedby="addon-wrapping"
-                                    value={inputsValues[count]}
+                                    value={manageValues[count]}
                                     name={`input-${count}`}
                                     onChange={(event) => {
                                       handleInputChange(event, count, element1)

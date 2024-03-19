@@ -17,13 +17,15 @@ import {
 } from "@coreui/react"
 import CIcon from "@coreui/icons-react"
 import { cilArrowBottom, cilBriefcase, cilClipboard, cilPen, cilTrash } from "@coreui/icons"
+import useVariables from "src/views/variables"
 
 const ClientTable = () => {
+  const { webRoute } = useVariables()
   const [clients, setClients] = useState([])
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3003/api/data/clients/all`)
+        const response = await axios.get(`${webRoute}/api/data/clients/all`)
         const parents = response.data.result1.filter((element) => element.NUT)
         setClients(parents)
       } catch (error) {
@@ -36,7 +38,7 @@ const ClientTable = () => {
   const handleDeleteClick = async (client) => {
     console.log("client:", client)
     try {
-      const response = await axios.delete(`http://localhost:3003/api/data/${client}/delete`, {
+      const response = await axios.delete(`${webRoute}/api/data/${client}/delete`, {
         formData: client,
       })
       if (response.data) {
@@ -79,7 +81,7 @@ const ClientTable = () => {
                     <CTableDataCell>{element.Nombre}</CTableDataCell>
                     <CTableDataCell>{element.Estado_Civil}</CTableDataCell>
                     <CTableDataCell>
-                      {element.Fecha_Defunción ? "FALLECIDO" : "VIVO"}
+                      {element.Fecha_Defuncion ? "FALLECIDO" : "VIVO"}
                     </CTableDataCell>
                     <CTableDataCell>
                       <CButton

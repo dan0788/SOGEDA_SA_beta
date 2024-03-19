@@ -20,19 +20,27 @@ import {
   CButton,
   CToaster,
 } from "@coreui/react"
-import { saveToast } from "../../Components"
+import SaveToast from "../../components/SaveToast.js"
 
 const DetailsTable = () => {
   const { clientName } = useParams()
-  const { toast, setToast, toaster, clientData, setClientData, inputsValues, setInputsValues } =
-    useVariables()
+  const {
+    toast,
+    setToast,
+    toaster,
+    clientData,
+    setClientData,
+    inputsValues,
+    setInputsValues,
+    webRoute,
+  } = useVariables()
   const [fields, setFields] = useState([])
   const [grupos, setGrupos] = useState([])
   const [gruposClient, setGruposClient] = useState([])
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3003/api/data/${clientName}`)
+        const response = await axios.get(`${webRoute}/api/data/${clientName}`)
         const parents = response.data.result1.filter(
           (element) => element.NUT && element.Tipo != "TITULAR",
         )
@@ -72,23 +80,25 @@ const DetailsTable = () => {
       .filter((element, key) => element.Field)
       .flatMap((element) => [element.Field])
     try {
-      const response = await axios.put(`http://localhost:3003/api/data/${clientName}/update`, {
+      const response = await axios.put(`${webRoute}/api/data/${clientName}/update`, {
         inputsValues: inputsValues,
         fields: fieldsArray,
       })
       if (response.data) {
-        //alert("Datos recibidos correctamente front:\n" + response.data)
-        setToast(saveToast("Datos guardados con éxito", true))
+        setToast(SaveToast("Datos guardados con éxito", true, "Now"))
       }
     } catch (error) {
-      //alert("Error al enviar los datos:\n", +error)
-      setToast(saveToast("Error al enviar los datos", false))
+      setToast(SaveToast("Error al enviar los datos", false, "Now"))
     }
   }
   const handleInputChange = (event, count, position) => {
     setInputsValues((prevState) => {
       const newInputsValues = [...prevState]
       newInputsValues[position][count] = event.target.value
+      console.log(
+        "newInputsValues[" + position + "][" + count + "]",
+        newInputsValues[position][count],
+      )
       return newInputsValues
     })
   }
