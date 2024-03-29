@@ -35,6 +35,7 @@ import {
 } from "@coreui/react"
 import NextPrevButton from "../components/NextPrevButton.js"
 import SaveToast from "../components/SaveToast.js"
+import Modal from "../components/Modal.js"
 
 const ManageClient = () => {
   const { clientName, id } = useParams()
@@ -44,6 +45,8 @@ const ManageClient = () => {
     fieldsExoneratedUpper,
     webRoute,
     clientData,
+    modalVisible,
+    setModalVisible,
     toast,
     setToast,
     toaster,
@@ -55,7 +58,6 @@ const ManageClient = () => {
     manageValues,
     setManageValues,
   } = useVariables()
-  const [visible, setVisible] = useState(false)
   const [showComponents, setShowComponents] = useState({
     newComponent: true,
     nextButton: true,
@@ -93,6 +95,7 @@ const ManageClient = () => {
           client: client,
           parents: parents,
         }))
+        setModalVisible(true)
         handleButtonClick(id)
         if (id == "6") {
           setShowComponents((prevState) => ({
@@ -421,8 +424,6 @@ const ManageClient = () => {
     })
   }
   const updatePortfolio = async () => {
-    console.log("portfolioFieldsAll", portfolioFieldsAll)
-    console.log("inputsValues", inputsValues)
     try {
       const response = await axios.put(
         `${webRoute}/api/data/portfolio/${clientData.client.NUT}/${clientName}/update`,
@@ -499,14 +500,17 @@ const ManageClient = () => {
   const ruc2Click = () => {
     const validRucCancellled = validateIfStringIsValid(clientData.client.Fecha_Cancelacion)
     const validRucSuspended = validateIfStringIsValid(clientData.client.Fecha_Suspension)
-    if (validRucSuspended == true && validRucCancellled == false) {
-      setVisible(true)
+    if (validRucSuspended == true) {
+      setModalVisible(true)
     }
     if (validRucCancellled == false) {
+      setModalVisible(true)
+    }
+    if (validRucCancellled == true) {
       setManageValues((prevState) => {
         const newManageValues = [...prevState]
         //SRI
-        newManageValues[62] = "" //nombre empresa
+        newManageValues[62] = "asd" //nombre empresa
         newManageValues[63] = "" //actividad
         newManageValues[64] = "" //descripcion
         newManageValues[65] = "" //cargo
@@ -534,7 +538,7 @@ const ManageClient = () => {
     )
   }
   const handleYesClick = (value) => {
-    setVisible(false)
+    setModalVisible(false)
     const currentYear = new Date().getFullYear()
     const startYear = clientData.client.Fecha_Inicio != "" ? clientData.client.Fecha_Inicio : ""
     const rebootYear =
@@ -571,7 +575,7 @@ const ManageClient = () => {
     }
   }
   const handleNoClick = (value) => {
-    setVisible(false)
+    setModalVisible(false)
     if (value == "NO") {
       setInputsValues((prevState) => {
         const newInputsValues = [...prevState]
@@ -730,6 +734,27 @@ const ManageClient = () => {
     }
     return NextPrevButton(handleClick, "", "Save")
   }
+  const RucModal = () => {
+    const handleClick1 = () => {
+      handleYesClick("SI")
+    }
+    const handleClick2 = () => {
+      handleNoClick("NO")
+    }
+    const handleClose = () => {
+      setModalVisible(false)
+    }
+    return Modal(
+      "¡Precaución!",
+      "El RUC personal del cliente se encuentra suspendido. ¿Desea agregarlo de todas formas?",
+      "SI",
+      "NO",
+      handleClick1,
+      handleClick2,
+      handleClose,
+      modalVisible,
+    )
+  }
   return (
     <div>
       <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
@@ -738,27 +763,7 @@ const ManageClient = () => {
         {id > 0 && id < range.length && showComponents.nextButton && <NextButton />}
       </div>
       <div>{<SaveButton />}</div>
-      <CModal
-        backdrop="static"
-        visible={visible}
-        onClose={() => setVisible(false)}
-        aria-labelledby="StaticBackdropExampleLabel"
-      >
-        <CModalHeader>
-          <CModalTitle id="StaticBackdropExampleLabel">¡Precaución!</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          El RUC personal del cliente se encuentra suspendido. ¿Desea agregarlo de todas formas?
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => handleYesClick("SI")}>
-            SI
-          </CButton>
-          <CButton color="primary" onClick={() => handleNoClick("NO")}>
-            NO
-          </CButton>
-        </CModalFooter>
-      </CModal>
+      {<RucModal />}
       <CRow>
         <CCol xs={12}>
           <CCard>

@@ -81,6 +81,7 @@ const useVariables = () => {
     { name: "Quinta sección" },
     { name: "Sexta sección" },
   ]
+  const [modalVisible, setModalVisible] = useState(false)
   const [toast, setToast] = useState(false)
   const toaster = useRef()
   const [clientData, setClientData] = useState({
@@ -98,6 +99,8 @@ const useVariables = () => {
     webRoute,
     database,
     sections,
+    modalVisible,
+    setModalVisible,
     toast,
     setToast,
     toaster,
