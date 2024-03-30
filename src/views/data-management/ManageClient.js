@@ -66,6 +66,7 @@ const ManageClient = () => {
     ruc2Button: false,
   })
   const [modalRucText, setModalRucText] = useState("")
+  const [typeModal, setTypeModal] = useState("") // YES_NO, OK
   var portfolioData = []
   var inputData = manageValues
   const [comments, setComments] = useState("")
@@ -564,53 +565,54 @@ const ManageClient = () => {
     })
   }
   const ruc1Click = () => {
-    const validRuc = validateIfStringIsValid(clientData.client.Fecha_Salida)
-    const currentYear = new Date().getFullYear()
-    const ingressDate = clientData.client.Fecha_Ingreso
-    const partes = ingressDate.split("/")
-    const admissionYear = partes[2]
-    const jobTime = currentYear - admissionYear
-    const addressRuc =
-      clientData.client.Provincia_1 +
-      " " +
-      clientData.client.Canton_1 +
-      " " +
-      clientData.client.Parroquia_1 +
-      " " +
-      clientData.client.Direccion_1
-    setManageValues((prevState) => {
-      const newManageValues = [...prevState]
-      //SRI
-      newManageValues[62] = !validRuc ? clientData.client.Empresa : "" //nombre empresa
-      newManageValues[63] = !validRuc ? clientData.client.Actividad_1 : "" //actividad
-      newManageValues[64] = !validRuc ? clientData.client.Descripcion : "" //descripcion
-      newManageValues[65] = !validRuc ? clientData.client.Cargo : "" //cargo
-      newManageValues[66] = jobTime + " AÑOS" //tiempo
-      newManageValues[67] = !validRuc ? addressRuc : addressRuc.trim() //direccion
-      newManageValues[68] = ""
-      newManageValues[69] = ""
-      newManageValues[70] = "" //telefono
-      return newManageValues
-    })
+    const validRucEnter = validateIfStringIsValid(clientData.client.Fecha_Ingreso)
+    const validRucOut = validateIfStringIsValid(clientData.client.Fecha_Salida)
+    const validRuc1Exist = validateIfStringIsValid(clientData.client.RUC_1)
+    if (validRuc1Exist == false) {
+      setModalVisible(true)
+      setModalRucText("El cliente no registra RUC de dependencia")
+      setTypeModal("OK")
+    }
+    if (validRuc1Exist == true && validRucEnter == true && validRucOut == true) {
+      setModalVisible(true)
+      setModalRucText(
+        "El cliente registra que ya no está trabajando en la empresa. ¿Desea agregarlo de todas formas?",
+      )
+      setTypeModal("YES_NO")
+    }
+    if (validRuc1Exist == true && validRucEnter == true && validRucOut == false) {
+      handleYesClick("SI", "RUC_1")
+    }
   }
   const ruc2Click = () => {
     const validRucCancellled = validateIfStringIsValid(clientData.client.Fecha_Cancelacion)
     const validRucSuspended = validateIfStringIsValid(clientData.client.Fecha_Suspension)
+    const validRuc2Exist = validateIfStringIsValid(clientData.client.RUC_2)
+    if (validRuc2Exist == false) {
+      const handleClose = () => {
+        setModalVisible(false)
+      }
+      setModalVisible(true)
+      setModalRucText("El cliente no registra RUC personal")
+      setTypeModal("OK")
+    }
     if (validRucSuspended == true && validRucCancellled == false) {
       setModalVisible(true)
       setModalRucText(
         "El RUC personal del cliente se encuentra suspendido. ¿Desea agregarlo de todas formas?",
       )
+      setTypeModal("YES_NO")
     }
     if (validRucSuspended == true && validRucCancellled == true) {
       setModalVisible(true)
       setModalRucText(
         "El RUC personal del cliente se encuentra cancelado. ¿Desea agregarlo de todas formas?",
       )
+      setTypeModal("YES_NO")
     }
     if (validRucSuspended == false && validRucCancellled == false) {
       setModalVisible(false)
-      handleYesClick("SI")
+      handleYesClick("SI", "RUC_2")
     }
   }
   const Ruc1Button = () => {
@@ -627,44 +629,75 @@ const ManageClient = () => {
       </CButton>
     )
   }
-  const handleYesClick = (value) => {
+  const handleYesClick = (value, valueRUC) => {
     setModalVisible(false)
-    const currentYear = new Date().getFullYear()
-    const startYear = clientData.client.Fecha_Inicio != "" ? clientData.client.Fecha_Inicio : ""
-    const rebootYear =
-      clientData.client.Fecha_Reinicio != "" ? clientData.client.Fecha_Reinicio : ""
-    const year = rebootYear != "" ? rebootYear : startYear != "" ? startYear : ""
-    const partes = year.split("/")
-    const admissionYear = partes[2]
-    const jobTime = currentYear - admissionYear
-    const addressRuc =
-      clientData.client.Provincia_2 +
-      " " +
-      clientData.client.Canton_2 +
-      " " +
-      clientData.client.Parroquia_2 +
-      " " +
-      clientData.client.Direccion_2 +
-      " " +
-      clientData.client.Referencia
     if (value == "SI") {
-      setManageValues((prevState) => {
-        const newManageValues = [...prevState]
-        //SRI
-        newManageValues[62] = clientData.client.Razon_Social //nombre empresa
-        newManageValues[63] = clientData.client.Actividad_2 //actividad
-        newManageValues[64] = clientData.client.Nombre_Fantasia //descripcion
-        newManageValues[65] = "" //cargo
-        newManageValues[66] = jobTime != "" ? jobTime + " AÑOS" : "" //tiempo
-        newManageValues[67] = validateIfStringIsValid(addressRuc) ? addressRuc : addressRuc.trim() //direccion
-        newManageValues[68] = ""
-        newManageValues[69] = ""
-        newManageValues[70] = "" //telefono
-        return newManageValues
-      })
+      if (valueRUC == "RUC_1") {
+        const currentYear = new Date().getFullYear()
+        const ingressDate = clientData.client.Fecha_Ingreso
+        const partes = ingressDate.split("/")
+        const admissionYear = partes[2]
+        const jobTime = currentYear - admissionYear
+        const addressRuc =
+          clientData.client.Provincia_1 +
+          " " +
+          clientData.client.Canton_1 +
+          " " +
+          clientData.client.Parroquia_1 +
+          " " +
+          clientData.client.Direccion_1
+        setManageValues((prevState) => {
+          const newManageValues = [...prevState]
+          //SRI
+          newManageValues[62] = clientData.client.Empresa //nombre empresa
+          newManageValues[63] = clientData.client.Actividad_1 //actividad
+          newManageValues[64] = clientData.client.Descripcion //descripcion
+          newManageValues[65] = clientData.client.Cargo //cargo
+          newManageValues[66] = jobTime + " AÑOS" //tiempo
+          newManageValues[67] = addressRuc //direccion
+          newManageValues[68] = ""
+          newManageValues[69] = ""
+          newManageValues[70] = clientData.client.Telefono_1 //telefono
+          return newManageValues
+        })
+      }
+      if (valueRUC == "RUC_2") {
+        const currentYear = new Date().getFullYear()
+        const startYear = clientData.client.Fecha_Inicio != "" ? clientData.client.Fecha_Inicio : ""
+        const rebootYear =
+          clientData.client.Fecha_Reinicio != "" ? clientData.client.Fecha_Reinicio : ""
+        const year = rebootYear != "" ? rebootYear : startYear != "" ? startYear : ""
+        const partes = year.split("/")
+        const admissionYear = partes[2]
+        const jobTime = currentYear - admissionYear
+        const addressRuc =
+          clientData.client.Provincia_2 +
+          " " +
+          clientData.client.Canton_2 +
+          " " +
+          clientData.client.Parroquia_2 +
+          " " +
+          clientData.client.Direccion_2 +
+          " " +
+          clientData.client.Referencia
+        setManageValues((prevState) => {
+          const newManageValues = [...prevState]
+          //SRI
+          newManageValues[62] = clientData.client.Razon_Social //nombre empresa
+          newManageValues[63] = clientData.client.Actividad_2 //actividad
+          newManageValues[64] = clientData.client.Nombre_Fantasia //descripcion
+          newManageValues[65] = "" //cargo
+          newManageValues[66] = jobTime != "" ? jobTime + " AÑOS" : "" //tiempo
+          newManageValues[67] = validateIfStringIsValid(addressRuc) ? addressRuc : addressRuc.trim() //direccion
+          newManageValues[68] = ""
+          newManageValues[69] = ""
+          newManageValues[70] = "" //telefono
+          return newManageValues
+        })
+      }
     }
   }
-  const handleNoClick = (value) => {
+  const handleNoClick = (value, valueRUC) => {
     setModalVisible(false)
     if (value == "NO") {
       setManageValues((prevState) => {
@@ -684,8 +717,8 @@ const ManageClient = () => {
     }
   }
   const CisText = () => {
-    const textC = clientData.parents.some((obj) => obj.Tipo === "CONYUGE")
-      ? "CI_CONYUGE:" + clientData.parents[0].NUT
+    const textC = clientData.parents.some((obj) => obj.Tipo == "CONYUGE")
+      ? "CI_CONYUGE: " + clientData.parents[0].NUT
       : "NO TIENE CONYUGE"
     return (
       <div>
@@ -798,7 +831,9 @@ const ManageClient = () => {
         <p className="text-emphasis">Choose de reference to insert</p>
         {clientData.parents.map((obj, idx) => {
           if (obj.Tipo != "CONYUGE") {
-            return addReferenceButton(obj, ref)
+            if (obj.Fecha_Defuncion == "") {
+              return addReferenceButton(obj, ref)
+            }
           }
           return null
         })}
@@ -824,26 +859,41 @@ const ManageClient = () => {
     }
     return NextPrevButton(handleClick, "", "Save")
   }
-  const RucModal = () => {
+  const RucModal = ({ value }) => {
     const handleClick1 = () => {
-      handleYesClick("SI")
+      handleYesClick("SI", "RUC_2")
     }
     const handleClick2 = () => {
-      handleNoClick("NO")
+      handleNoClick("NO", "RUC_2")
     }
     const handleClose = () => {
       setModalVisible(false)
     }
-    return Modal(
-      "¡Precaución!",
-      modalRucText,
-      "SI",
-      "NO",
-      handleClick1,
-      handleClick2,
-      handleClose,
-      modalVisible,
-    )
+    if (value == "YES_NO") {
+      return Modal(
+        "¡Precaución!",
+        modalRucText,
+        handleClose,
+        modalVisible,
+        "SI",
+        handleClick1,
+        "secondary",
+        "NO",
+        handleClick2,
+        "primary",
+      )
+    }
+    if (value == "OK") {
+      return Modal(
+        "Falta de datos",
+        modalRucText,
+        handleClose,
+        modalVisible,
+        "CERRAR",
+        handleClose,
+        "danger",
+      )
+    }
   }
   return (
     <div>
@@ -853,12 +903,12 @@ const ManageClient = () => {
         {id > 0 && id < range.length && showComponents.nextButton && <NextButton />}
       </div>
       <div>{<SaveButton />}</div>
-      {<RucModal />}
+      {<RucModal value={typeModal} />}
       <CRow>
         <CCol xs={12}>
           <CCard>
             <CCardHeader>
-              <strong>{clientData.client.Nombre}</strong> <small>Management{comments}</small>
+              <strong>{clientData.client.Nombre}</strong> <small>Management</small>
             </CCardHeader>
             <CCardBody>
               <p className="text-emphasis">

@@ -1,7 +1,11 @@
 import React from "react"
 import { CButton, CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter } from "@coreui/react"
 
-const Modal = (title, text, textButton1, textButton2, event1, event2, closeEvent, visible) => {
+const Modal = (title, text, closeEvent, visible, ...buttons) => {
+  const array = []
+  for (let i = 0; i < buttons.length / 3; i++) {
+    array.push(i)
+  }
   return (
     <CModal
       backdrop="static"
@@ -14,12 +18,17 @@ const Modal = (title, text, textButton1, textButton2, event1, event2, closeEvent
       </CModalHeader>
       <CModalBody>{text}</CModalBody>
       <CModalFooter>
-        <CButton color="secondary" onClick={event1}>
-          {textButton1}
-        </CButton>
-        <CButton color="primary" onClick={event2}>
-          {textButton2}
-        </CButton>
+        {array.map((_, index) => {
+          const buttonIndex = index * 3
+          const buttonText = buttons[buttonIndex]
+          const buttonClick = buttons[buttonIndex + 1]
+          const buttonColor = buttons[buttonIndex + 2]
+          return (
+            <CButton color={buttonColor} onClick={buttonClick} key={index}>
+              {buttonText}
+            </CButton>
+          )
+        })}
       </CModalFooter>
     </CModal>
   )

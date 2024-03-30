@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const database = {
   nameDatabase: "excel",
-  nameTableClients: "clients",
+  nameTableClients: "clientstest",
   nameTableManage: "portfolios",
 }
 
