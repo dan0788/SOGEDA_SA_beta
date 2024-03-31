@@ -79,6 +79,7 @@ const DetailsTable = () => {
     const fieldsArray = fields
       .filter((element, key) => element.Field)
       .flatMap((element) => [element.Field])
+    console.log("inputsValuesDetails", inputsValues)
     try {
       const response = await axios.put(`${webRoute}/api/data/${clientName}/update`, {
         inputsValues: inputsValues,

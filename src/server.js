@@ -61,6 +61,19 @@ app.get('/api/data/clients/all', (req, res) => {
   })
 })
 
+app.post('/api/data/search',(req,res)=>{
+  const searchValue = req.body.searchValue
+  const sql = `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defuncion FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" AND Nombre LIKE '${searchValue}%' ORDER BY Nombre`
+  Promise.all([executeQuery(sql, [])])
+    .then((results) => {
+      res.status(200).send(results);
+    })
+    .catch((error) => {
+      console.log('Error al ejecutar las consultas:', error)
+      res.send(500).send('Error al insertar los datos')
+    })
+})
+
 app.post('/api/data/newclient', (req, res) => {
   const inputData = req.body; console.log(inputData);
   const camposArray = inputData.formData[0]

@@ -18,6 +18,7 @@ import {
 import CIcon from "@coreui/icons-react"
 import { cilArrowBottom, cilBriefcase, cilClipboard, cilPen, cilTrash } from "@coreui/icons"
 import useVariables from "src/views/variables"
+import Search from "src/views/components/Search.js"
 
 const ClientTable = () => {
   const { webRoute } = useVariables()
@@ -48,6 +49,10 @@ const ClientTable = () => {
       console.error("Error al enviar los datos:", error)
     }
   }
+  const handleDataReceived = (data) => {
+    console.log("data", data[0])
+    setClients(data[0])
+  }
 
   return (
     <CCol xs={12}>
@@ -59,6 +64,9 @@ const ClientTable = () => {
           <p className="text-medium-emphasis small">
             This table shows all the clients registered in the database
           </p>
+          <div className="col-md-3">
+            <Search onDataReceived={handleDataReceived} />
+          </div>
           <CTable>
             <CTableHead>
               <CTableRow>
