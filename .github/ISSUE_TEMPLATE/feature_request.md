@@ -1,10 +1,9 @@
 ---
 name: Feature request
 about: Suggest an idea for a new feature in CoreUI Free React Admin Template.
-title: ''
+title: ""
 labels: feature
-assignees: ''
-
+assignees: ""
 ---
 
 Before opening:

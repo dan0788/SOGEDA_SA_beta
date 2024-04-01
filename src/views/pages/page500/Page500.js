@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 import {
   CButton,
   CCol,
@@ -7,9 +7,9 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilMagnifyingGlass } from '@coreui/icons'
+} from "@coreui/react"
+import CIcon from "@coreui/icons-react"
+import { cilMagnifyingGlass } from "@coreui/icons"
 
 const Page500 = () => {
   return (

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { CButton, CCard, CCardBody, CCardHeader, CCol, CCollapse, CRow } from '@coreui/react'
-import { DocsExample } from 'src/components'
+import React, { useState } from "react"
+import { CButton, CCard, CCardBody, CCardHeader, CCol, CCollapse, CRow } from "@coreui/react"
+import { DocsExample } from "src/components"
 
 const Collapses = () => {
   const [visible, setVisible] = useState(false)
@@ -57,9 +57,9 @@ const Collapses = () => {
               >
                 Button
               </CButton>
-              <div style={{ minHeight: '120px' }}>
+              <div style={{ minHeight: "120px" }}>
                 <CCollapse id="collapseWidthExample" horizontal visible={visibleHorizontal}>
-                  <CCard style={{ width: '300px' }}>
+                  <CCard style={{ width: "300px" }}>
                     <CCardBody>
                       This is some placeholder content for a horizontal collapse. It&#39;s hidden by
                       default and shown when triggered.

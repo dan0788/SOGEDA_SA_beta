@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 import {
   CButton,
   CCard,
@@ -14,8 +14,8 @@ import {
   CPopover,
   CRow,
   CTooltip,
-} from '@coreui/react'
-import { DocsExample } from 'src/components'
+} from "@coreui/react"
+import { DocsExample } from "src/components"
 
 const LiveDemo = () => {
   const [visible, setVisible] = useState(false)
@@ -343,7 +343,7 @@ const TooltipsPopovers = () => {
             This
             <CPopover title="Popover title" content="Popover body content is set in this property.">
               <CButton>button</CButton>
-            </CPopover>{' '}
+            </CPopover>{" "}
             triggers a popover on click.
           </p>
           <hr />
@@ -351,11 +351,11 @@ const TooltipsPopovers = () => {
           <p>
             <CTooltip content="Tooltip">
               <CLink>This link</CLink>
-            </CTooltip>{' '}
+            </CTooltip>{" "}
             and
             <CTooltip content="Tooltip">
               <CLink>that link</CLink>
-            </CTooltip>{' '}
+            </CTooltip>{" "}
             have tooltips on hover.
           </p>
         </CModalBody>
@@ -467,7 +467,7 @@ const Modals = () => {
           </CCardHeader>
           <CCardBody>
             <p className="text-medium-emphasis small">
-              Below is a static modal example (meaning its <code>position</code> and{' '}
+              Below is a static modal example (meaning its <code>position</code> and{" "}
               <code>display</code> have been overridden). Included are the modal header, modal body
               (required for <code>padding</code>), and modal footer (optional). We ask that you
               include modal headers with dismiss actions whenever possible, or provide another
@@ -538,7 +538,7 @@ const Modals = () => {
               {ScrollingLongContent()}
             </DocsExample>
             <p className="text-medium-emphasis small">
-              You can also create a scrollable modal that allows scroll the modal body by adding{' '}
+              You can also create a scrollable modal that allows scroll the modal body by adding{" "}
               <code>scrollable</code> prop.
             </p>
             <DocsExample href="components/modal#scrolling-long-content">
@@ -590,7 +590,7 @@ const Modals = () => {
           </CCardHeader>
           <CCardBody>
             <p className="text-medium-emphasis small">
-              Modals have three optional sizes, available via modifier classes to be placed on a{' '}
+              Modals have three optional sizes, available via modifier classes to be placed on a{" "}
               <code>&lt;CModal&gt;</code>. These sizes kick in at certain breakpoints to avoid
               horizontal scrollbars on narrower viewports.
             </p>

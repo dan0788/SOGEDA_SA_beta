@@ -54,6 +54,7 @@ const ClientsTable = React.lazy(() => import("./views/clients/table/ClientTable"
 const DetailsTable = React.lazy(() => import("./views/clients/table/DetailsTable"))
 const InsertNewClient = React.lazy(() => import("./views/clients/InsertNewClient"))
 const ManageClient = React.lazy(() => import("./views/data-management/ManageClient"))
+const EditToExportClient = React.lazy(() => import("./views/data-management/EditToExportClient"))
 const ExportClient = React.lazy(() => import("./views/data-management/ExportClient"))
 
 const routes = [
@@ -105,7 +106,12 @@ const routes = [
   { path: "/clientstable/:clientName/delete", name: "Table of clients", element: ClientsTable },
   { path: "/newclient", name: "NewClient", element: InsertNewClient },
   { path: "/manage/client/:clientName/:id", name: "Manage Client", element: ManageClient },
-  { path: "/generate/excel/client", name: "Export Client", element: ExportClient },
+  { path: "/generate/excel/client", name: "Edit to Export Client", element: EditToExportClient },
+  {
+    path: "/generate/excel/client/export/:NUT",
+    name: "Export Client",
+    element: ExportClient,
+  },
 ]
 
 export default routes
