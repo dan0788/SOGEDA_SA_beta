@@ -59,7 +59,7 @@ const InsertNewClient = () => {
     const ws = XLSX.utils.aoa_to_sheet(wsData)
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, "Client Data")
-    XLSX.writeFile(wb, `${clientData[0]}.xlsx`)
+    XLSX.writeFile(wb, `${clientData[2]}.xlsx`)
   }
   const NewComponent = () => {
     if (!clientData || clientData.length == 0) {

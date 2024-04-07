@@ -36,8 +36,9 @@ const InsertNewClient = () => {
     setShowNewComponent(true)
     try {
       Papa.parse(event.target.files[0], {
+        delimiter: ";",
         complete: function (results) {
-          console.log("results.data", results.data)
+          // console.log("results", results.data)
           const parents = results.data.filter(
             (element) => element[2] && element[0] !== "TITULAR" && element[0] !== "Tipo",
           )
@@ -47,28 +48,22 @@ const InsertNewClient = () => {
             parents: parents,
             client: client,
           })
-          setFormData(results.data)
         },
       })
     } catch (error) {
-      console.log(error)
+      console.log("error", error)
     }
   }
-  useEffect(() => {
-    /* console.log("clientData.all", clientData.all)
-    console.log("clientData.parents", clientData.parents)
-    console.log("clientData.client", clientData.client) */
-  }, [clientData])
 
   const handleUploadClick = async (event) => {
     event.preventDefault()
     try {
       const response = await axios.post(`${webRoute}/api/data/newclient`, {
-        formData: formData,
+        formData: clientData.all,
       })
       if (response.data) {
         setToast(SaveToast("Datos guardados con éxito", true, "Now"))
-        //navigate("/clientstable")
+        // navigate("/clientstable")
       }
     } catch (error) {
       setToast(SaveToast("Error al enviar los datos", false, "Now"))

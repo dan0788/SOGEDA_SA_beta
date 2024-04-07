@@ -19,7 +19,7 @@ const Search = ({ onDataReceived }) => {
   }
   return (
     <CInputGroup className="mb-3">
-      <CInputGroupText id="basic-addon1">
+      <CInputGroupText id="basic-addon1" className="font-black">
         <CIcon icon={cilMagnifyingGlass} />
       </CInputGroupText>
       <CFormInput
@@ -27,6 +27,7 @@ const Search = ({ onDataReceived }) => {
         aria-label="Username"
         aria-describedby="basic-addon1"
         onChange={(e) => handleSearchChange(e)}
+        autoFocus
       />
     </CInputGroup>
   )

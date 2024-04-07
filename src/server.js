@@ -44,7 +44,7 @@ app.get("/api/data/:clientName", (req, res) => {
       res.status(200).json(combinedResults)
     })
     .catch((error) => {
-      console.error("Error al ejecutar las consultas:", error)
+      // console.error("Error al ejecutar las consultas:", error)
       res.status(500).send("Error al obtener datos")
     })
 })
@@ -53,7 +53,7 @@ app.get("/api/data/clients/all", (req, res) => {
   const sql = `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defuncion FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" ORDER BY Nombre`
   connection.query(sql, (err, result) => {
     if (err) {
-      console.error("Error al insertar datos en MySQL:", err)
+      // console.error("Error al insertar datos en MySQL:", err)
       res.status(500).send("Error al enviar datos")
     } else {
       res.status(200).send({ result1: result })
@@ -69,14 +69,13 @@ app.post("/api/data/search", (req, res) => {
       res.status(200).send(results)
     })
     .catch((error) => {
-      console.log("Error al ejecutar las consultas:", error)
+      // console.log("Error al ejecutar las consultas:", error)
       res.send(500).send("Error al insertar los datos")
     })
 })
 
 app.post("/api/data/newclient", (req, res) => {
   const inputData = req.body
-  console.log(inputData)
   const camposArray = inputData.formData[0]
   const titularArray = inputData.formData[1]
   const conyugeArray = inputData.formData[2]
@@ -101,10 +100,9 @@ app.post("/api/data/newclient", (req, res) => {
       res.send("Datos recibidos correctamente back")
     })
     .catch((error) => {
-      console.log("Error al ejecutar las consultas:", error)
+      // console.log("Error al ejecutar las consultas:", error)
       res.status(500).send("Error al insertar los datos")
     })
-  //console.log('Datos recibidos back:', sql);
 })
 
 app.delete("/api/data/:clientName/delete", (req, res) => {
@@ -131,7 +129,7 @@ app.put("/api/data/:clientName/update", (req, res) => {
       res.status(200).send("Datos actualizados correctamente back")
     })
     .catch((error) => {
-      console.log("Error al ejecutar las consultas:", error)
+      // console.log("Error al ejecutar las consultas:", error)
       res.send(500).send("Error al insertar los datos")
     })
 })
@@ -168,7 +166,7 @@ app.post("/api/data/portfolio/:NUT/newClient", (req, res) => {
       res.send("Datos recibidos correctamente port:\n ")
     })
     .catch((error) => {
-      console.log("Error al ejecutar las consultas:", error)
+      // console.log("Error al ejecutar las consultas:", error)
       res.status(500).send("Error al insertar los datos")
     })
 })
@@ -189,15 +187,9 @@ app.put("/api/data/portfolio/:NUT/:clientName/update", (req, res) => {
   const { NUT, clientName } = req.params
   const portfolioFieldsAll = req.body.portfolioFieldsAll
   const inputsValues = req.body.inputsValues
-  console.log("inputsValues", inputsValues)
-  /* console.log("portfolioFields", portfolioFields);
-  console.log("inputsValues", inputsValues); */
   const sql = generateUpdatePortfolioSql(clientName, inputsValues, portfolioFieldsAll)
-  console.log(sql)
-  //console.log(sql);
   Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      console.log("datos actualizados")
       res.status(200).send(results)
     })
     .catch((error) => {
@@ -209,7 +201,7 @@ app.post("/api/data/generate/excel/client/export/:NUT", (req, res) => {
   const sql = `SELECT * FROM ${database.nameTableManage} WHERE CI_TITULAR = '` + NUT + `'`
   Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      console.log("datos actualizados" + results)
+      // console.log("datos actualizados" + results)
       res.status(200).send(results)
     })
     .catch((error) => {

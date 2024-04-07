@@ -85,6 +85,7 @@ const ManageClient = () => {
         const parents = response.data.result1.filter(
           (element) => element.NUT && element.Tipo !== "TITULAR",
         )
+        console.log(response.data)
         const client = response.data.result1[0]
         const all = response.data.result1
         setClientData((prevData) => ({
@@ -140,7 +141,7 @@ const ManageClient = () => {
             referencesButton: false,
           }))
         }
-        if (id == "5") {
+        if (id == "5" || id == "6") {
           setShowComponents((prevState) => ({
             ...prevState,
             CIsText: true,
@@ -160,8 +161,6 @@ const ManageClient = () => {
         )
         portfolioData = Object.values(response3.data[0][0])
         setPortfolioValues(portfolioData)
-        //console.log("portfolioData", portfolioData)
-        //console.log("parents", parents)
         if (all && all.length > 0) {
           const validatedMobileNumbersT = validateMobileNumbers(all, "TITULAR")
           const validatedFixedNumbersT = validateFixedNumbers(all, "TITULAR")
@@ -313,6 +312,8 @@ const ManageClient = () => {
     parents,
     all,
   ) => {
+    const validateConyuge = all[1].NUT == "" ? false : true
+    console.log(validateConyuge)
     let newComment = ""
     let count = 0
     if (id == "4") {
@@ -325,9 +326,9 @@ const ManageClient = () => {
           } else if (count > 0) {
             if (i == 4) {
               newComment = newComment + " NI HIJOS "
-            } else {
+            } /*  else {
               newComment = newComment + " NI " + all[i].Tipo
-            }
+            } */
           }
         }
       }
@@ -337,11 +338,16 @@ const ManageClient = () => {
       register = validatedEmailsT.length == 0 ? "TITULAR NO REGISTRA CORREOS VALIDOS " : ""
       newComment = newComment + register
       register =
-        validatedFixedNumbersC.length == 0 ? "CONYUGE NO REGISTRA NUMEROS FIJOS VALIDOS " : ""
+        validatedFixedNumbersC.length == 0 && validateConyuge
+          ? "CONYUGE NO REGISTRA NUMEROS FIJOS VALIDOS "
+          : ""
       newComment = newComment + register
-      register = validatedEmailsC.length == 0 ? "CONYUGE NO REGISTRA CORREOS VALIDOS " : ""
+      register =
+        validatedEmailsC.length == 0 && validateConyuge
+          ? "CONYUGE NO REGISTRA CORREOS VALIDOS "
+          : ""
       newComment = newComment + register
-      register = inputsValues[15] == "NO HAY DATOS" ? "NO REGISTRA DIRECCION EXACTA " : ""
+      register = manageValues[15] == "NO HAY DATOS" ? "TITULAR NO REGISTRA DIRECCION EXACTA " : ""
       newComment = newComment + register
     }
     return newComment
@@ -354,9 +360,9 @@ const ManageClient = () => {
     let addressCompany = false
     if (id == "6") {
       value = document.querySelector('input[name="input-76"]').value
-      demand1 = value != "" ? true : false
+      demand1 = value != "" && value != "NO HAY DATOS" ? true : false
       value = document.querySelector('input[name="input-87"]').value
-      demand2 = value != "" ? true : false
+      demand2 = value != "" && value != "NO HAY DATOS" ? true : false
       value = document.querySelector('input[name="input-68"]').value
       addressCompany = value != "" ? true : false
       if (!addressCompany) {
@@ -364,7 +370,7 @@ const ManageClient = () => {
       }
       if (demand1 && !demand2) {
         newComment =
-          newComment + "REGISTRA 1 DEMANDA Y SALE COMO 'LA CONSULTA NO DEVOLVIO RESULTADOS'"
+          newComment + "REGISTRA 1 DEMANDA Y SALE COMO LA CONSULTA NO DEVOLVIO RESULTADOS"
       } else if (demand1 && demand2) {
         newComment = newComment + "REGISTRA 2 DEMANDAS"
       } else if (!demand1 && !demand2) {
@@ -914,7 +920,7 @@ const ManageClient = () => {
               <p className="text-emphasis">
                 <strong>{rangePortfolioFields.dataTitle}</strong>
               </p>
-              {id == "5" && showComponents.CIsText && <CisText />}
+              {(id == "5" || id == "6") && showComponents.CIsText && <CisText />}
               <CButton
                 color="success"
                 size="sm"

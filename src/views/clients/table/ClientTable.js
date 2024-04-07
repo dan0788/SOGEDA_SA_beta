@@ -37,7 +37,6 @@ const ClientTable = () => {
   }, [])
 
   const handleDeleteClick = async (client) => {
-    console.log("client:", client)
     try {
       const response = await axios.delete(`${webRoute}/api/data/${client}/delete`, {
         formData: client,
@@ -50,7 +49,6 @@ const ClientTable = () => {
     }
   }
   const handleDataReceived = (data) => {
-    console.log("data", data[0])
     setClients(data[0])
   }
 
