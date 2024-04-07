@@ -208,6 +208,23 @@ app.post("/api/data/generate/excel/client/export/:NUT", (req, res) => {
       res.status(500).send("Error al obtener los datos")
     })
 })
+app.post("/api/data/generate/excel/clients/export/group", (req, res) => {
+  const { groupNut } = req.body
+  let arraySqlUpdates = []
+  let sql =`SHOW COLUMNS FROM ${database.nameTableManage}`
+  arraySqlUpdates.push(executeQuery(sql, []))
+  for (let i = 0; i < groupNut.length; i++) {
+    sql = `SELECT * FROM ${database.nameTableManage} WHERE CI_TITULAR = '` + groupNut[i] + `'`
+    arraySqlUpdates.push(executeQuery(sql, []))
+  }
+  Promise.all(arraySqlUpdates)
+    .then((results) => {
+      res.status(200).send(results)
+    })
+    .catch((error) => {
+      res.send(500).send("Error al insertar los datos")
+    })
+})
 
 app.listen(port, () => {
   console.log(`Servidor backend corriendo en http://localhost:${port}`)

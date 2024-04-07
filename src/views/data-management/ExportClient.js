@@ -42,9 +42,6 @@ const InsertNewClient = () => {
         )
         setClientData(Object.values(response.data[0][0]))
         setFields(Object.keys(response.data[0][0]))
-        clientData.map((el) => {
-          console.log(el)
-        })
       } catch (error) {
         //setToast(SaveToast("Error al enviar los datos", false, "Now"))
       }
