@@ -321,14 +321,18 @@ const ManageClient = () => {
         const existParent = parents.some((object) => object.Tipo == all[i].Tipo && all[i].NUT)
         if (!existParent) {
           if (count == 0) {
-            newComment = newComment + "NO REGISTRA " + all[i].Tipo
+            let text = ""
+            if (all[i].Tipo.includes("HIJO")) {
+              text = "HIJOS"
+            } else {
+              text = all[i].Tipo
+            }
+            newComment = newComment + "NO REGISTRA " + text + " "
             count++
           } else if (count > 0) {
             if (i == 4) {
               newComment = newComment + " NI HIJOS "
-            } /*  else {
-              newComment = newComment + " NI " + all[i].Tipo
-            } */
+            }
           }
         }
       }
@@ -347,7 +351,10 @@ const ManageClient = () => {
           ? "CONYUGE NO REGISTRA CORREOS VALIDOS "
           : ""
       newComment = newComment + register
-      register = manageValues[15] == "NO HAY DATOS" ? "TITULAR NO REGISTRA DIRECCION EXACTA " : ""
+      register =
+        manageValues[15] == "NO HAY DATOS" || manageValues[15] == ""
+          ? "TITULAR NO REGISTRA DIRECCION EXACTA "
+          : ""
       newComment = newComment + register
     }
     return newComment
@@ -355,17 +362,20 @@ const ManageClient = () => {
   const fillCommentsLegacyClick = () => {
     let newComment = ""
     let value = ""
+    let value1 = ""
     let demand1 = false
     let demand2 = false
     let addressCompany = false
+    let company = false
     if (id == "6") {
       value = document.querySelector('input[name="input-76"]').value
       demand1 = value != "" && value != "NO HAY DATOS" ? true : false
       value = document.querySelector('input[name="input-87"]').value
       demand2 = value != "" && value != "NO HAY DATOS" ? true : false
       value = document.querySelector('input[name="input-68"]').value
-      addressCompany = value != "" ? true : false
-      if (!addressCompany) {
+      value1 = document.querySelector('input[name="input-62"]').value
+      addressCompany = value == "" && value1 != "" ? true : false
+      if (addressCompany === true) {
         newComment = "EMPRESA NO REGISTRA DIRECCION EXACTA "
       }
       if (demand1 && !demand2) {

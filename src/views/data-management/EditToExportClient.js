@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import PropTypes, { element } from "prop-types"
+import PropTypes from "prop-types"
 import axios from "axios"
 import * as XLSX from "xlsx"
 import {
@@ -24,6 +24,7 @@ import { cilList, cilPen } from "@coreui/icons"
 import Search from "src/views/components/Search.js"
 import useVariables from "../variables"
 import Modal from "../components/Modal"
+import PopoverTop from "../components/PopoverTop"
 
 const ExportClient = () => {
   const { webRoute } = useVariables()
@@ -140,15 +141,21 @@ const ExportClient = () => {
   }
   const ExportAllButton = () => {
     return (
-      <CButtonGroup className="col-md-1" role="group" aria-label="Basic mixed styles example">
-        <CButton
-          color="info font-darkgreen h-100"
-          className="p-0 m-0 align-self-end"
-          onClick={() => setModalVisible(true)}
-        >
-          Export All
-        </CButton>
-      </CButtonGroup>
+      <PopoverTop
+        content="Export all selected registers"
+        placement="left"
+        cInside={
+          <CButtonGroup className="col-md-1" role="group" aria-label="Basic mixed styles example">
+            <CButton
+              color="info font-darkgreen h-100"
+              className="p-0 m-0 align-self-end"
+              onClick={() => setModalVisible(true)}
+            >
+              Export All
+            </CButton>
+          </CButtonGroup>
+        }
+      />
     )
   }
   const handleYesClick = async () => {
@@ -187,9 +194,6 @@ const ExportClient = () => {
     const handleClick2 = () => {
       setModalVisible(false)
     }
-    const handleClose = () => {
-      setModalVisible(false)
-    }
     return Modal(
       "¡Precaución!",
       <div>
@@ -224,18 +228,21 @@ const ExportClient = () => {
   const TableHeaderCellEdit = () => {
     return <CTableHeaderCell scope="col" style={{ width: "45px" }}></CTableHeaderCell>
   }
-  const TableDataCellEditButton = () => {
+  const TableDataCellEditButton = ({ nut }) => {
     return (
       <CTableDataCell>
         <CButton
           color="link font-green"
           className="p-0 m-0 col-md-12"
-          href={`/generate/excel/client/export/${element.NUT}`}
+          href={`/generate/excel/client/export/${nut}`}
         >
           <CIcon className="col-md-12" icon={cilPen} customClassName="nav-icon" />
         </CButton>
       </CTableDataCell>
     )
+  }
+  TableDataCellEditButton.propTypes = {
+    nut: PropTypes.string.isRequired,
   }
   return (
     <div>
@@ -244,22 +251,28 @@ const ExportClient = () => {
         {<ConfirmModal />}
         <div className="d-flex mb-1">
           <CInputGroup className="mb-1">
-            <CInputGroupText
-              id="basic-addon1"
-              className="font-black border-transparent"
-              style={{ cursor: "pointer" }}
-              onClick={() =>
-                setShowComponents((prevState) => ({
-                  ...prevState,
-                  generalCheckCell: !prevState.generalCheckCell,
-                  eachDataCell: !prevState.eachDataCell,
-                  exportAllButton: !prevState.exportAllButton,
-                  tableHeaderCellEdit: !prevState.tableHeaderCellEdit,
-                }))
+            <PopoverTop
+              content="Check List"
+              placement="top"
+              cInside={
+                <CInputGroupText
+                  id="basic-addon1"
+                  className="font-black border-transparent"
+                  style={{ cursor: "pointer" }}
+                  onClick={() =>
+                    setShowComponents((prevState) => ({
+                      ...prevState,
+                      generalCheckCell: !prevState.generalCheckCell,
+                      eachDataCell: !prevState.eachDataCell,
+                      exportAllButton: !prevState.exportAllButton,
+                      tableHeaderCellEdit: !prevState.tableHeaderCellEdit,
+                    }))
+                  }
+                >
+                  <CIcon icon={cilList} />
+                </CInputGroupText>
               }
-            >
-              <CIcon icon={cilList} />
-            </CInputGroupText>
+            />
           </CInputGroup>
           {showComponents.exportAllButton && <ExportAllButton />}
         </div>
@@ -295,7 +308,9 @@ const ExportClient = () => {
                       <CTableDataCell>
                         {element.Fecha_Defuncion ? "FALLECIDO" : "VIVO"}
                       </CTableDataCell>
-                      {showComponents.tableHeaderCellEdit && <TableDataCellEditButton />}
+                      {showComponents.tableHeaderCellEdit && (
+                        <TableDataCellEditButton nut={element.NUT} />
+                      )}
                     </CTableRow>
                   )
                 })}
