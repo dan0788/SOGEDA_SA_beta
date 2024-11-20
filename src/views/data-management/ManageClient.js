@@ -605,28 +605,25 @@ const ManageClient = () => {
     const validRucSuspended = validateIfStringIsValid(clientData.client.Fecha_Suspension)
     const validRuc2Exist = validateIfStringIsValid(clientData.client.RUC_2)
     if (validRuc2Exist == false) {
-      const handleClose = () => {
-        setModalVisible(false)
-      }
       setModalVisible(true)
       setModalRucText("El cliente no registra RUC personal")
       setTypeModal("OK")
     }
-    if (validRucSuspended == true && validRucCancellled == false) {
+    if (validRucSuspended == true && validRucCancellled == false && validRuc2Exist == true) {
       setModalVisible(true)
       setModalRucText(
         "El RUC personal del cliente se encuentra suspendido. ¿Desea agregarlo de todas formas?",
       )
       setTypeModal("YES_NO")
     }
-    if (validRucSuspended == true && validRucCancellled == true) {
+    if (validRucSuspended == true && validRucCancellled == true && validRuc2Exist == true) {
       setModalVisible(true)
       setModalRucText(
         "El RUC personal del cliente se encuentra cancelado. ¿Desea agregarlo de todas formas?",
       )
       setTypeModal("YES_NO")
     }
-    if (validRucSuspended == false && validRucCancellled == false) {
+    if (validRucSuspended == false && validRucCancellled == false && validRuc2Exist == true) {
       setModalVisible(false)
       handleYesClick("SI", "RUC_2")
     }

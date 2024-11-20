@@ -282,5 +282,6 @@ function generateUpdatePortfolioSql(clientName, inputData, fields) {
     }
   })
   updateSql += ` WHERE CI_TITULAR = '${inputData[2]}'`
+  console.log(updateSql);
   return updateSql
 }
