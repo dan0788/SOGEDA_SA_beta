@@ -67,7 +67,7 @@ const useVariables = () => {
     "CORREO_RF2",
     "GEO_REFERENCIA",
   ]
-  const webRoute = "http://localhost:3003"
+  const webRoute = process.env.REACT_APP_API_URL || ""
   const database = {
     nameDatabase: "excel",
     nameTableClients: "clientstest",

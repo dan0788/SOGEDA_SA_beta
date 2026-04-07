@@ -23,7 +23,7 @@ const ClientTable = () => {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3003/api/data/clients/all`)
+        const response = await axios.get(`/api/data/clients/all`)
         const parents = response.data.result1.filter((element) => element.NUT)
         setClients(parents)
       } catch (error) {
@@ -36,7 +36,7 @@ const ClientTable = () => {
   const handleDeleteClick = async (client) => {
     console.log("client:", client)
     try {
-      const response = await axios.delete(`http://localhost:3003/api/data/${client}/delete`, {
+      const response = await axios.delete(`/api/data/${client}/delete`, {
         formData: client,
       })
       if (response.data) {

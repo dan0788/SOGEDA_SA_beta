@@ -64,7 +64,7 @@ const InsertNewClient = () => {
   const handleUploadClick = async (event) => {
     event.preventDefault()
     try {
-      const response = await axios.post("http://localhost:3003/api/data/newclient", {
+      const response = await axios.post("/api/data/newclient", {
         formData: formData,
       })
       if (response.data) {

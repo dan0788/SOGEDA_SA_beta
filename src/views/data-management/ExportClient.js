@@ -11,7 +11,7 @@ const ExportClient = () => {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3003/api/data/clients/all`)
+        const response = await axios.get(`/api/data/clients/all`)
         const names = response.data.result1.map((element) => {
           return { label: element.Nombre, value: element.NUT }
         })
@@ -29,7 +29,7 @@ const ExportClient = () => {
     setNutValue(nut)
     console.log("nutValue", event.target.value)
     const response = await axios.get(
-      `http://localhost:3003/api/data/portfolio/generate/excel/client/${nut}`,
+      `/api/data/portfolio/generate/excel/client/${nut}`,
     )
     console.log("response", response.data[0])
   }

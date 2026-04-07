@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import axios from "axios"
 import { setGroupsOf5Values } from "src/Validator"
-import useVariables from "../../variables.mjs"
 import {
   CCard,
   CCardBody,
@@ -34,7 +33,7 @@ const DetailsTable = () => {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3003/api/data/${clientName}`)
+        const response = await axios.get(`/api/data/${clientName}`)
         const parents = response.data.result1.filter(
           (element) => element.NUT && element.Tipo != "TITULAR",
         )
@@ -74,7 +73,7 @@ const DetailsTable = () => {
       .filter((element, key) => element.Field)
       .flatMap((element) => [element.Field])
     try {
-      const response = await axios.put(`http://localhost:3003/api/data/${clientName}/update`, {
+      const response = await axios.put(`/api/data/${clientName}/update`, {
         inputsValues: inputsValues,
         fields: fieldsArray,
       })
