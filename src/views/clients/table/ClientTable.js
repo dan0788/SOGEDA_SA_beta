@@ -17,13 +17,21 @@ import {
 } from "@coreui/react"
 import CIcon from "@coreui/icons-react"
 import { cilArrowBottom, cilBriefcase, cilClipboard, cilPen, cilTrash } from "@coreui/icons"
+import useVariables from "src/views/variables"
+import Search from "src/views/components/Search.js"
+import PopoverTop from "src/views/components/PopoverTop"
 
 const ClientTable = () => {
+  const { webRoute } = useVariables()
   const [clients, setClients] = useState([])
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
+<<<<<<< HEAD
         const response = await axios.get(`/api/data/clients/all`)
+=======
+        const response = await axios.get(`${webRoute}/api/data/clients/all`)
+>>>>>>> origin/version1.0
         const parents = response.data.result1.filter((element) => element.NUT)
         setClients(parents)
       } catch (error) {
@@ -34,9 +42,12 @@ const ClientTable = () => {
   }, [])
 
   const handleDeleteClick = async (client) => {
-    console.log("client:", client)
     try {
+<<<<<<< HEAD
       const response = await axios.delete(`/api/data/${client}/delete`, {
+=======
+      const response = await axios.delete(`${webRoute}/api/data/${client}/delete`, {
+>>>>>>> origin/version1.0
         formData: client,
       })
       if (response.data) {
@@ -45,6 +56,9 @@ const ClientTable = () => {
     } catch (error) {
       console.error("Error al enviar los datos:", error)
     }
+  }
+  const handleDataReceived = (data) => {
+    setClients(data[0])
   }
 
   return (
@@ -57,6 +71,9 @@ const ClientTable = () => {
           <p className="text-medium-emphasis small">
             This table shows all the clients registered in the database
           </p>
+          <div className="col-md-3">
+            <Search onDataReceived={handleDataReceived} />
+          </div>
           <CTable>
             <CTableHead>
               <CTableRow>
@@ -79,52 +96,69 @@ const ClientTable = () => {
                     <CTableDataCell>{element.Nombre}</CTableDataCell>
                     <CTableDataCell>{element.Estado_Civil}</CTableDataCell>
                     <CTableDataCell>
-                      {element.Fecha_Defunción ? "FALLECIDO" : "VIVO"}
+                      {element.Fecha_Defuncion ? "FALLECIDO" : "VIVO"}
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CButton
-                        color="link"
-                        className="p-0 m-0 col-md-12"
-                        href={`/clientstable/${element.Cliente}`}
-                      >
-                        <CIcon
-                          className="col-md-12"
-                          icon={cilPen}
-                          customClassName="nav-icon"
-                          style={{ color: "green" }}
-                        />
-                      </CButton>
+                      <PopoverTop
+                        content="Edit register"
+                        placement="top"
+                        cInside={
+                          <CButton
+                            color="link"
+                            className="p-0 m-0 col-md-12"
+                            href={`/clientstable/${element.Cliente}`}
+                          >
+                            <CIcon
+                              className="col-md-12"
+                              icon={cilPen}
+                              customClassName="nav-icon"
+                              style={{ color: "green" }}
+                            />
+                          </CButton>
+                        }
+                      />
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CButton
-                        color="link"
-                        className="p-0 m-0 col-md-12"
-                        //href={`/clientstable/${element.Cliente}/delete`}
-                        onClick={() => {
-                          handleDeleteClick(element.Cliente)
-                        }}
-                      >
-                        <CIcon
-                          className="col-md-12"
-                          icon={cilTrash}
-                          customClassName="nav-icon"
-                          style={{ color: "red" }}
-                        />
-                      </CButton>
+                      <PopoverTop
+                        content="Delete register"
+                        placement="top"
+                        cInside={
+                          <CButton
+                            color="link"
+                            className="p-0 m-0 col-md-12"
+                            onClick={() => {
+                              handleDeleteClick(element.Cliente)
+                            }}
+                          >
+                            <CIcon
+                              className="col-md-12"
+                              icon={cilTrash}
+                              customClassName="nav-icon"
+                              style={{ color: "red" }}
+                            />
+                          </CButton>
+                        }
+                      />
                     </CTableDataCell>
                     <CTableDataCell>
-                      <CButton
-                        color="link"
-                        className="p-0 m-0 col-md-12"
-                        href={`/manage/client/${element.Cliente}/1`}
-                      >
-                        <CIcon
-                          className="col-md-12"
-                          icon={cilBriefcase}
-                          customClassName="nav-icon"
-                          style={{ color: "blue" }}
-                        />
-                      </CButton>
+                      <PopoverTop
+                        content="Manage register"
+                        placement="top"
+                        cInside={
+                          <CButton
+                            color="link"
+                            className="p-0 m-0 col-md-12"
+                            href={`/manage/client/${element.Cliente}/1`}
+                          >
+                            <CIcon
+                              className="col-md-12"
+                              icon={cilBriefcase}
+                              customClassName="nav-icon"
+                              style={{ color: "blue" }}
+                            />
+                          </CButton>
+                        }
+                      />
                     </CTableDataCell>
                   </CTableRow>
                 )

@@ -153,12 +153,13 @@ export function validateFixedNumbers(objectAll, stringTipoCliente) {
             element[0] === "Medio_3" ||
             element[0] === "Medio_4" ||
             element[0] === "Medio_5" ||
-            element[0] === "Medio_6") &&
+            element[0] === "Medio_6" ||
+            element[0] === "Telefono") &&
           element[1] !== "",
       )
       .flatMap((element) => [element[1]])
     const objectParentsWithoutEmptys = objectParents.map((element) => {
-      const array = ["Medio_1", "Medio_2", "Medio_3", "Medio_4", "Medio_5", "Medio_6"]
+      const array = ["Medio_1", "Medio_2", "Medio_3", "Medio_4", "Medio_5", "Medio_6", "Telefono"]
         .map((element1) => element[element1])
         .filter((element1) => element1)
       return array
@@ -214,5 +215,13 @@ export function validateIfStringIsValid(stringData) {
     return false
   } else {
     return true
+  }
+}
+export function validateInputExist(inputSelector, valueToReturn) {
+  const selector = document.querySelector(inputSelector)
+  if (selector) {
+    return selector.value
+  } else {
+    return valueToReturn
   }
 }

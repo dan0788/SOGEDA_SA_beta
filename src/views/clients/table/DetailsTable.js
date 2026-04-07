@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import axios from "axios"
+<<<<<<< HEAD
 import { setGroupsOf5Values } from "src/Validator"
+=======
+import { setGroupsOf5Values } from "src/views/Validator"
+import useVariables from "../../variables.js"
+>>>>>>> origin/version1.0
 import {
   CCard,
   CCardBody,
@@ -17,23 +22,33 @@ import {
   CInputGroup,
   CFormInput,
   CButton,
+  CToaster,
 } from "@coreui/react"
+import SaveToast from "../../components/SaveToast.js"
 
 const DetailsTable = () => {
   const { clientName } = useParams()
-  const [clientData, setClientData] = useState({
-    all: [],
-    parents: [],
-    client: [],
-  })
-  const [inputsValues, setInputsValues] = useState([])
+  const {
+    toast,
+    setToast,
+    toaster,
+    clientData,
+    setClientData,
+    inputsValues,
+    setInputsValues,
+    webRoute,
+  } = useVariables()
   const [fields, setFields] = useState([])
   const [grupos, setGrupos] = useState([])
   const [gruposClient, setGruposClient] = useState([])
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
+<<<<<<< HEAD
         const response = await axios.get(`/api/data/${clientName}`)
+=======
+        const response = await axios.get(`${webRoute}/api/data/${clientName}`)
+>>>>>>> origin/version1.0
         const parents = response.data.result1.filter(
           (element) => element.NUT && element.Tipo != "TITULAR",
         )
@@ -72,25 +87,35 @@ const DetailsTable = () => {
     const fieldsArray = fields
       .filter((element, key) => element.Field)
       .flatMap((element) => [element.Field])
+    console.log("inputsValuesDetails", inputsValues)
     try {
+<<<<<<< HEAD
       const response = await axios.put(`/api/data/${clientName}/update`, {
+=======
+      const response = await axios.put(`${webRoute}/api/data/${clientName}/update`, {
+>>>>>>> origin/version1.0
         inputsValues: inputsValues,
         fields: fieldsArray,
       })
       if (response.data) {
-        alert("Datos recibidos correctamente front:\n" + response.data)
+        setToast(SaveToast("Datos guardados con éxito", true, "Now"))
       }
     } catch (error) {
-      alert("Error al enviar los datos:\n", +error)
+      setToast(SaveToast("Error al enviar los datos", false, "Now"))
     }
   }
   const handleInputChange = (event, count, position) => {
     setInputsValues((prevState) => {
       const newInputsValues = [...prevState]
       newInputsValues[position][count] = event.target.value
+      console.log(
+        "newInputsValues[" + position + "][" + count + "]",
+        newInputsValues[position][count],
+      )
       return newInputsValues
     })
   }
+
   return (
     <div>
       <div className="d-flex justify-content-center">
@@ -104,6 +129,7 @@ const DetailsTable = () => {
         >
           Save
         </CButton>
+        <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
       </div>
       <CRow>
         <CCol xs={12}>

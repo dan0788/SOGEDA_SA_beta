@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import Papa from "papaparse"
-import { setGroupsOf5Values, setGroupsOf5Array } from "src/Validator"
+import { setGroupsOf5Values, setGroupsOf5Array } from "src/views/Validator"
 import {
   CCard,
   CCardBody,
@@ -15,30 +15,30 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CToaster,
   CInputGroup,
   CFormInput,
   CInputGroupText,
   CSpinner,
 } from "@coreui/react"
+import useVariables from "../variables"
+import SaveToast from "../components/SaveToast"
 
 const InsertNewClient = () => {
   const navigate = useNavigate()
+  const { toast, setToast, toaster, clientData, setClientData, webRoute } = useVariables()
   const [showNewComponent, setShowNewComponent] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
   const [formData, setFormData] = useState({})
-  const [clientData, setClientData] = useState({
-    all: [],
-    parents: [],
-    client: [],
-  })
 
   const handleFileInputChange = (event) => {
     setSelectedFile(event.target.files[0]) // Guarda el archivo seleccionado
     setShowNewComponent(true)
     try {
       Papa.parse(event.target.files[0], {
+        delimiter: ";",
         complete: function (results) {
-          console.log("results.data", results.data)
+          // console.log("results", results.data)
           const parents = results.data.filter(
             (element) => element[2] && element[0] !== "TITULAR" && element[0] !== "Tipo",
           )
@@ -48,41 +48,39 @@ const InsertNewClient = () => {
             parents: parents,
             client: client,
           })
-          setFormData(results.data)
         },
       })
     } catch (error) {
-      console.log(error)
+      console.log("error", error)
     }
   }
-  useEffect(() => {
-    /* console.log("clientData.all", clientData.all)
-    console.log("clientData.parents", clientData.parents)
-    console.log("clientData.client", clientData.client) */
-  }, [clientData])
 
   const handleUploadClick = async (event) => {
     event.preventDefault()
     try {
+<<<<<<< HEAD
       const response = await axios.post("/api/data/newclient", {
         formData: formData,
+=======
+      const response = await axios.post(`${webRoute}/api/data/newclient`, {
+        formData: clientData.all,
+>>>>>>> origin/version1.0
       })
       if (response.data) {
-        alert("Datos actualizados correctamente correctamente")
-        navigate("/clientstable")
+        setToast(SaveToast("Datos guardados con éxito", true, "Now"))
+        // navigate("/clientstable")
       }
     } catch (error) {
-      console.error("Error al enviar los datos:", error)
+      setToast(SaveToast("Error al enviar los datos", false, "Now"))
     }
   }
-
   const NewComponent = () => {
     if (!clientData.all || clientData.all.length === 0) {
       return <CSpinner color="danger"></CSpinner>
     }
-    console.log("clientData.all", clientData.all)
     return (
       <div>
+        <CToaster className="p-3" placement="top-end" push={toast} ref={toaster} />
         <CRow>
           <CCol xs={12}>
             <CCard className="mb-2">

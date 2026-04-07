@@ -1,10 +1,10 @@
-const express = require('express')
-const bodyParser = require('body-parser')
-const mysql = require('mysql')
-const cors = require('cors') // Importa el middleware cors
+const express = require("express")
+const bodyParser = require("body-parser")
+const mysql = require("mysql")
+const cors = require("cors") // Importa el middleware cors
 
 const app = express()
-const port = 3003
+const port = 3004
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -16,23 +16,24 @@ const database = {
 }
 
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // Tu usuario de MySQL
-  password: '', // Tu contraseña de MySQL
+  host: "localhost",
+  user: "root", // Tu usuario de MySQL
+  password: "", // Tu contraseña de MySQL
   database: database.nameDatabase, // El nombre de tu base de datos
 })
 
 connection.connect((err) => {
   if (err) {
-    console.error('Error al conectar a MySQL:', err)
+    console.error("Error al conectar a MySQL:", err)
     throw err
   }
-  console.log('Conectado a MySQL correctamente')
+  console.log("Conectado a MySQL correctamente")
 })
 /* databook registries */
-app.get('/api/data/:clientName', (req, res) => {
+app.get("/api/data/:clientName", (req, res) => {
   const clientName = req.params.clientName
-  const sql1 = `SELECT * FROM ${database.nameTableClients} WHERE Cliente = '` + req.params.clientName + `'`
+  const sql1 =
+    `SELECT * FROM ${database.nameTableClients} WHERE Cliente = '` + req.params.clientName + `'`
   const sql2 = `SHOW COLUMNS FROM ${database.nameTableClients}`
   Promise.all([executeQuery(sql1, [clientName]), executeQuery(sql2, [clientName])])
     .then((results) => {
@@ -43,26 +44,38 @@ app.get('/api/data/:clientName', (req, res) => {
       res.status(200).json(combinedResults)
     })
     .catch((error) => {
-      console.error('Error al ejecutar las consultas:', error)
-      res.status(500).send('Error al obtener datos')
+      // console.error("Error al ejecutar las consultas:", error)
+      res.status(500).send("Error al obtener datos")
     })
 })
 
-app.get('/api/data/clients/all', (req, res) => {
-  const sql =
-    `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defunción FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" ORDER BY Nombre`
+app.get("/api/data/clients/all", (req, res) => {
+  const sql = `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defuncion FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" ORDER BY Nombre`
   connection.query(sql, (err, result) => {
     if (err) {
-      console.error('Error al insertar datos en MySQL:', err)
-      res.status(500).send('Error al enviar datos')
+      // console.error("Error al insertar datos en MySQL:", err)
+      res.status(500).send("Error al enviar datos")
     } else {
       res.status(200).send({ result1: result })
     }
   })
 })
 
-app.post('/api/data/newclient', (req, res) => {
-  const inputData = req.body; console.log(inputData);
+app.post("/api/data/search", (req, res) => {
+  const searchValue = req.body.searchValue
+  const sql = `SELECT Tipo, Cliente, NUT, Nombre, Estado_Civil, Fecha_Defuncion FROM ${database.nameTableClients} WHERE Tipo = "TITULAR" AND Nombre LIKE '${searchValue}%' ORDER BY Nombre`
+  Promise.all([executeQuery(sql, [])])
+    .then((results) => {
+      res.status(200).send(results)
+    })
+    .catch((error) => {
+      // console.log("Error al ejecutar las consultas:", error)
+      res.send(500).send("Error al insertar los datos")
+    })
+})
+
+app.post("/api/data/newclient", (req, res) => {
+  const inputData = req.body
   const camposArray = inputData.formData[0]
   const titularArray = inputData.formData[1]
   const conyugeArray = inputData.formData[2]
@@ -73,29 +86,30 @@ app.post('/api/data/newclient', (req, res) => {
   const hijo3Array = inputData.formData[7]
   const hijo4Array = inputData.formData[8]
   // Ejecutar las consultas SQL de forma asíncrona
-  Promise.all([executeQuery(generateSqltoInsert(camposArray, titularArray, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, conyugeArray, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, padreArray, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, madreArray, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, hijo1Array, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, hijo2Array, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, hijo3Array, database.nameTableClients), []),
-  executeQuery(generateSqltoInsert(camposArray, hijo4Array, database.nameTableClients), [])])
+  Promise.all([
+    executeQuery(generateSqltoInsert(camposArray, titularArray, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, conyugeArray, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, padreArray, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, madreArray, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, hijo1Array, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, hijo2Array, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, hijo3Array, database.nameTableClients), []),
+    executeQuery(generateSqltoInsert(camposArray, hijo4Array, database.nameTableClients), []),
+  ])
     .then((results) => {
-      res.send('Datos recibidos correctamente back');
+      res.send("Datos recibidos correctamente back")
     })
     .catch((error) => {
-      console.log('Error al ejecutar las consultas:', error)
-      res.status(500).send('Error al insertar los datos')
+      // console.log("Error al ejecutar las consultas:", error)
+      res.status(500).send("Error al insertar los datos")
     })
-  //console.log('Datos recibidos back:', sql);
-});
+})
 
 app.delete("/api/data/:clientName/delete", (req, res) => {
   const sql = `DELETE FROM ${database.nameTableClients} WHERE Cliente = '${req.params.clientName}'`
   connection.query(sql, (err, result) => {
     if (err) {
-      res.send('Error al enviar datos')
+      res.send("Error al enviar datos")
     } else {
       res.send("Datos eliminados correctamente")
     }
@@ -112,27 +126,27 @@ app.put("/api/data/:clientName/update", (req, res) => {
   }
   Promise.all(arraySqlUpdates)
     .then((results) => {
-      res.status(200).send('Datos actualizados correctamente back');
+      res.status(200).send("Datos actualizados correctamente back")
     })
     .catch((error) => {
-      console.log('Error al ejecutar las consultas:', error)
-      res.send(500).send('Error al insertar los datos')
+      // console.log("Error al ejecutar las consultas:", error)
+      res.send(500).send("Error al insertar los datos")
     })
 })
 
 /* data management */
-app.get('/api/data/portfolio/fields/:minRange/:maxRange', (req, res) => {
+app.get("/api/data/portfolio/fields/:minRange/:maxRange", (req, res) => {
   const { minRange, maxRange } = req.params
   const sql = `SHOW COLUMNS FROM ${database.nameTableManage}`
   Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      res.status(200).send(results);
+      res.status(200).send(results)
     })
     .catch((error) => {
-      res.status(500).send('Error al insertar los datos')
+      res.status(500).send("Error al insertar los datos")
     })
 })
-app.post('/api/data/portfolio/:NUT/newClient', (req, res) => {
+app.post("/api/data/portfolio/:NUT/newClient", (req, res) => {
   const { NUT } = req.params
   const portfolioFields = req.body.portfolioFields.flatMap((element) => [element.Field])
   const emptyArray = new Array(portfolioFields.length).fill("")
@@ -141,7 +155,7 @@ app.post('/api/data/portfolio/:NUT/newClient', (req, res) => {
   const sqlCount = `SELECT COUNT(*) FROM ${database.nameTableManage} WHERE CI_TITULAR = ?`
   Promise.all([executeQuery(sqlCount, [NUT])])
     .then((results) => {
-      const count = results[0][0]['COUNT(*)']
+      const count = results[0][0]["COUNT(*)"]
       if (count > 0) {
         return null
       } else {
@@ -149,55 +163,66 @@ app.post('/api/data/portfolio/:NUT/newClient', (req, res) => {
       }
     })
     .then(() => {
-      res.send('Datos recibidos correctamente port:\n ');
+      res.send("Datos recibidos correctamente port:\n ")
     })
     .catch((error) => {
-      console.log('Error al ejecutar las consultas:', error)
-      res.status(500).send('Error al insertar los datos')
+      // console.log("Error al ejecutar las consultas:", error)
+      res.status(500).send("Error al insertar los datos")
     })
 })
 //verificar si ya existe el cliente en portfolio
-app.get('/api/data/portfolio/:NUT', (req, res) => {
+app.get("/api/data/portfolio/:NUT", (req, res) => {
   const NUT = req.params.NUT
   const sql = `SELECT * FROM ${database.nameTableManage} WHERE CI_TITULAR='` + NUT + `'`
   Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      res.status(200).send(results);
+      res.status(200).send(results)
     })
     .catch((error) => {
-      res.status(500).send('Error al obtener los datos')
+      res.status(500).send("Error al obtener los datos")
     })
 })
 //actualizar cada vez que se cambia de página en ManageClient
-app.put('/api/data/portfolio/:NUT/:clientName/update', (req, res) => {
+app.put("/api/data/portfolio/:NUT/:clientName/update", (req, res) => {
   const { NUT, clientName } = req.params
   const portfolioFieldsAll = req.body.portfolioFieldsAll
   const inputsValues = req.body.inputsValues
-  console.log("inputsValues", inputsValues);
-  /* console.log("portfolioFields", portfolioFields);
-  console.log("inputsValues", inputsValues); */
   const sql = generateUpdatePortfolioSql(clientName, inputsValues, portfolioFieldsAll)
-  //console.log(sql);
   Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      console.log("datos actualizados");
-      res.status(200).send(results);
+      res.status(200).send(results)
     })
     .catch((error) => {
-      res.status(500).send('Error al obtener los datos')
+      res.status(500).send("Error al obtener los datos")
     })
 })
-app.get('/api/data/portfolio/generate/excel/client/:NUT', (req, res) => {
+app.post("/api/data/generate/excel/client/export/:NUT", (req, res) => {
   const { NUT } = req.params
   const sql = `SELECT * FROM ${database.nameTableManage} WHERE CI_TITULAR = '` + NUT + `'`
-  console.log(sql);
-  Promise.all([executeQuery(sql, [NUT])])
+  Promise.all([executeQuery(sql, [])])
     .then((results) => {
-      console.log("datos actualizados" + results);
-      res.status(200).send(results);
+      // console.log("datos actualizados" + results)
+      res.status(200).send(results)
     })
     .catch((error) => {
-      res.status(500).send('Error al obtener los datos')
+      res.status(500).send("Error al obtener los datos")
+    })
+})
+app.post("/api/data/generate/excel/clients/export/group", (req, res) => {
+  const { groupNut } = req.body
+  let arraySqlUpdates = []
+  let sql =`SHOW COLUMNS FROM ${database.nameTableManage}`
+  arraySqlUpdates.push(executeQuery(sql, []))
+  for (let i = 0; i < groupNut.length; i++) {
+    sql = `SELECT * FROM ${database.nameTableManage} WHERE CI_TITULAR = '` + groupNut[i] + `'`
+    arraySqlUpdates.push(executeQuery(sql, []))
+  }
+  Promise.all(arraySqlUpdates)
+    .then((results) => {
+      res.status(200).send(results)
+    })
+    .catch((error) => {
+      res.send(500).send("Error al insertar los datos")
     })
 })
 
@@ -223,39 +248,40 @@ function generateSqltoInsert(arrayCampos, arrayValues, datatable) {
     if (index !== arrayCampos.length - 1) {
       sql += ", "
     }
-  });
+  })
   sql += ") VALUES ("
   arrayValues.forEach((element, index) => {
-    element = element.replace(/'/g, "\"")
+    element = element.replace(/'/g, '"')
     sql += `'${element}'`
     if (index !== arrayValues.length - 1) {
       sql += ", "
     }
-  });
+  })
   sql += ")"
   return sql
 }
 function generateUpdateSql(clientName, inputData, fields) {
-  let updateSql = `UPDATE ${database.nameTableClients} SET `;
+  let updateSql = `UPDATE ${database.nameTableClients} SET `
   fields.map((columnName, index) => {
-    const value = columnName.replace(/ /g, "_");
-    updateSql += `${value} = '${inputData[index]}'`;
+    const value = columnName.replace(/ /g, "_")
+    updateSql += `${value} = '${inputData[index]}'`
     if (index < fields.length - 1) {
-      updateSql += ', ';
+      updateSql += ", "
     }
-  });
-  updateSql += ` WHERE Cliente = '${clientName}' AND Tipo='${inputData[0]}'`;
-  return updateSql;
+  })
+  updateSql += ` WHERE Cliente = '${clientName}' AND Tipo='${inputData[0]}'`
+  return updateSql
 }
 function generateUpdatePortfolioSql(clientName, inputData, fields) {
-  let updateSql = `UPDATE portfolios SET `;
+  let updateSql = `UPDATE portfolios SET `
   fields.map((columnName, index) => {
-    const value = columnName.replace(/ /g, "_");
-    updateSql += `${value} = '${inputData[index]}'`;
+    const value = columnName.replace(/ /g, "_")
+    updateSql += `${value} = '${inputData[index]}'`
     if (index < fields.length - 1) {
-      updateSql += ', ';
+      updateSql += ", "
     }
-  });
-  updateSql += ` WHERE CI_TITULAR = '${inputData[2]}'`;
-  return updateSql;
+  })
+  updateSql += ` WHERE CI_TITULAR = '${inputData[2]}'`
+  console.log(updateSql);
+  return updateSql
 }

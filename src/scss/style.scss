@@ -17,4 +17,9 @@ $enable-rtl: true;
 @import "custom";
 
 // Bootstrap
-@import 'bootstrap/dist/css/bootstrap.min.css';
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+// If you want diferent colors.
+@import "colors";
+
+// @import "login"

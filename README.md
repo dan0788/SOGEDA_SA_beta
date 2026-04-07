@@ -1,4 +1,5 @@
 # SOGEDA SA
+<<<<<<< HEAD
 ## Software de gestión de datos
 
 El proyecto **SOGEDA** nació a partir de la idea de gestionar datos personales de la información de clientes guardados en archivos csv. 
@@ -9,3 +10,9 @@ La versión beta se la comenzó a utilizar el miércoles 13 de marzo de 2024 ini
 Agradezco a todas las personas que me apoyaron en este proyecto y espero en el futuro mejorar la calidad del software en versiones posteriores. Muchas gracias.
 
 Link del admin de React CoreUi: https://coreui.io/react/docs/getting-started/introduction/
+=======
+
+## Software de gestión de datos
+
+La versión oficial 1.0 del proyecto **SOGEDA** continúa sus operaciones mejorando su producto para definir su posterior fecha de lanzamiento.
+>>>>>>> origin/version1.0

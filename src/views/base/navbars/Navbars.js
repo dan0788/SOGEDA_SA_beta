@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 import {
   CCard,
   CCardBody,
@@ -18,8 +18,8 @@ import {
   CNavLink,
   CDropdown,
   CButton,
-} from '@coreui/react'
-import { DocsLink } from 'src/components'
+} from "@coreui/react"
+import { DocsLink } from "src/components"
 
 const CNavbars = () => {
   const [visible, setVisible] = useState(false)

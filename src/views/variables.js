@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 
 const useVariables = () => {
   const range = [
@@ -67,12 +67,55 @@ const useVariables = () => {
     "CORREO_RF2",
     "GEO_REFERENCIA",
   ]
+<<<<<<< HEAD:src/views/variables.mjs
   const webRoute = process.env.REACT_APP_API_URL || ""
+=======
+  const webRoute = "http://localhost:3004"
+>>>>>>> origin/version1.0:src/views/variables.js
   const database = {
     nameDatabase: "excel",
     nameTableClients: "clientstest",
     nameTableManage: "portfolios",
   }
-  return { range, fieldsExoneratedSpecialChar, fieldsExoneratedUpper, webRoute, database }
+  const sections = [
+    { name: "Primera sección" },
+    { name: "Segunda sección" },
+    { name: "Tercera sección" },
+    { name: "Cuarta sección" },
+    { name: "Quinta sección" },
+    { name: "Sexta sección" },
+  ]
+  const [modalVisible, setModalVisible] = useState(false)
+  const [toast, setToast] = useState(false)
+  const toaster = useRef()
+  const [clientData, setClientData] = useState({
+    all: [],
+    parents: [],
+    client: [],
+  })
+  const [inputsValues, setInputsValues] = useState([])
+  const [portfolioValues, setPortfolioValues] = useState([])
+  const [manageValues, setManageValues] = useState([])
+  return {
+    range,
+    fieldsExoneratedSpecialChar,
+    fieldsExoneratedUpper,
+    webRoute,
+    database,
+    sections,
+    modalVisible,
+    setModalVisible,
+    toast,
+    setToast,
+    toaster,
+    clientData,
+    setClientData,
+    inputsValues,
+    setInputsValues,
+    portfolioValues,
+    setPortfolioValues,
+    manageValues,
+    setManageValues,
+  }
 }
 export default useVariables

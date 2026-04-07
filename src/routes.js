@@ -2,7 +2,6 @@ import React from "react"
 
 const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"))
 const Colors = React.lazy(() => import("./views/theme/colors/Colors"))
-const Typography = React.lazy(() => import("./views/theme/typography/Typography"))
 
 // Base
 const Accordion = React.lazy(() => import("./views/base/accordion/Accordion"))
@@ -55,6 +54,7 @@ const ClientsTable = React.lazy(() => import("./views/clients/table/ClientTable"
 const DetailsTable = React.lazy(() => import("./views/clients/table/DetailsTable"))
 const InsertNewClient = React.lazy(() => import("./views/clients/InsertNewClient"))
 const ManageClient = React.lazy(() => import("./views/data-management/ManageClient"))
+const EditToExportClient = React.lazy(() => import("./views/data-management/EditToExportClient"))
 const ExportClient = React.lazy(() => import("./views/data-management/ExportClient"))
 
 const routes = [
@@ -62,7 +62,6 @@ const routes = [
   { path: "/dashboard", name: "Dashboard", element: Dashboard },
   { path: "/theme", name: "Theme", element: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", element: Colors },
-  { path: "/theme/typography", name: "Typography", element: Typography },
   { path: "/base", name: "Base", element: Cards, exact: true },
   { path: "/base/accordion", name: "Accordion", element: Accordion },
   { path: "/base/breadcrumbs", name: "Breadcrumbs", element: Breadcrumbs },
@@ -107,7 +106,12 @@ const routes = [
   { path: "/clientstable/:clientName/delete", name: "Table of clients", element: ClientsTable },
   { path: "/newclient", name: "NewClient", element: InsertNewClient },
   { path: "/manage/client/:clientName/:id", name: "Manage Client", element: ManageClient },
-  { path: "/generate/excel/client", name: "Export Client", element: ExportClient },
+  { path: "/generate/excel/client", name: "Edit to Export Client", element: EditToExportClient },
+  {
+    path: "/generate/excel/client/export/:NUT",
+    name: "Export Client",
+    element: ExportClient,
+  },
 ]
 
 export default routes
